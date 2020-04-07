@@ -24,7 +24,26 @@
     <body>
         <h1>ProMan</h1>
 
-        <button id="new_board_btn">New Board</button>
+        <button id="new_board_btn" data-toogle="modal" data-targer="#myModal">New Board</button>
+        <div id="myModal" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button id="close_modal" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+              <div class="modal-body">
+                  <form method="POST" id="boardModalForm" action="/add-board">
+                      <label for="titleField">Title:</label><br>
+                      <input id="titleField" type="text" placeholder="Title..." name="board_title">
+                      <input id="submit_board" type="submit" value="Submit">
+                  </form>
+              </div>
+            </div>
+
+          </div>
+        </div>
 
 
     <div class="board-container">

@@ -54,5 +54,16 @@ export let dom = {
         // shows the cards of a board
         // it adds necessary event listeners also
     },
+    addBoardModal: function () {
+        let addButton=document.getElementById('new_board_btn')
+        let modal = document.getElementById("myModal")
+        let close_btn= document.getElementById("close_modal")
+        addButton.addEventListener('click',function (event) {
+            modal.style.display = "block";
+        })
+        close_btn.addEventListener("click",function (event) {
+            modal.style.display = "none";
+        })
+    },
     // here comes more features
 };

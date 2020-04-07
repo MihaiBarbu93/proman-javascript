@@ -1,4 +1,4 @@
-import persistence
+import persistence,connection
 
 
 def get_card_status(status_id):
@@ -28,3 +28,9 @@ def get_cards_for_board(board_id):
             matching_cards.append(card)
     print(matching_cards)
     return matching_cards
+
+@connection.connection_handler
+def _insert_board(cursor,title):
+    cursor.execute(f'''
+                    INSERT INTO boards VALUES  (default,'{title}');
+                    ''')
