@@ -27,4 +27,5 @@ def get_cards_for_board(board_id):
         if card['board_id'] == str(board_id):
             card['status_id'] = get_card_status(card['status_id'])  # Set textual status for the card
             matching_cards.append(card)
+    print(matching_cards)
     return matching_cards

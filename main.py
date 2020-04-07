@@ -26,6 +26,7 @@ def get_boards():
 @app.route("/get-cards/<int:board_id>")
 @json_response
 def get_cards_for_board(board_id: int):
+    print(board_id)
     """
     All cards that belongs to a board
     :param board_id: id of the parent board
