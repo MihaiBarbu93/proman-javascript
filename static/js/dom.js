@@ -31,7 +31,7 @@ export let dom = {
                         <button id="${board.id}" class="board-toggle btn btn-link" data-toggle="collapse" data-target="#collapse${board.id}" aria-expanded="false" aria-controls="collapseOne">
                         <i class="fas fa-chevron-down"></i></button>
                     </div>
-                    <div id="collapse${board.id}" class="collapse show">
+                    <div id="collapse${board.id}" class="collapse">
                         <div class="board-columns"></div>
                     </div>
                 </section>
