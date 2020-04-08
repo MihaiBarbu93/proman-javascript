@@ -1,7 +1,8 @@
 from flask import Flask, render_template, url_for,request,redirect, jsonify
 from util import json_response
 
-import data_handler
+import data_handler, persistence
+import json
 
 app = Flask(__name__)
 
@@ -35,7 +36,6 @@ def get_boards():
 @app.route("/get-cards/<int:board_id>")
 @json_response
 def get_cards_for_board(board_id: int):
-    print(board_id)
     """
     All cards that belongs to a board
     :param board_id: id of the parent board
@@ -49,6 +49,13 @@ def add_board():
         title=request.form['board_title']
         data_handler._insert_board(title)
         return redirect(url_for('index'))
+
+
+@app.route("/get-statuses")
+def get_all_statuses():
+    all_statuses = persistence.get_statuses()
+    all_statuses_json = json.dumps(all_statuses)
+    return all_statuses_json
 
 
 
