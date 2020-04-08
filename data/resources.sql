@@ -12,6 +12,7 @@ CREATE TABLE boards(
 CREATE TABLE statuses(
         id serial not null ,
         title varchar(20),
+        board_id integer,
         PRIMARY KEY (id)
 );
 
@@ -28,10 +29,10 @@ CREATE TABLE cards(
 
 INSERT INTO boards (title) VALUES('Board1');
 INSERT INTO boards (title) VALUES('Board2');
-INSERT INTO statuses (title) VALUES('New');
-INSERT INTO statuses (title) VALUES('In progress');
-INSERT INTO statuses (title) VALUES('Testing');
-INSERT INTO statuses (title) VALUES('Done');
+INSERT INTO statuses (title, board_id) VALUES('New',0);
+INSERT INTO statuses (title,board_id) VALUES('In progress',0);
+INSERT INTO statuses (title,board_id) VALUES('Testing',0);
+INSERT INTO statuses (title,board_id) VALUES('Done',0);
 INSERT INTO cards (board_id, title, status_id, order_priority) VALUES(1,'New Card1',1,0)
 INSERT INTO cards (board_id, title, status_id, order_priority) VALUES(1,'New Card2',1,1);
 INSERT INTO cards (board_id, title, status_id, order_priority) VALUES(1,'In progress card',2,0);

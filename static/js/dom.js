@@ -92,13 +92,14 @@ export let dom = {
 
                                   boardColumnContainers[board.id - 1].innerHTML += boardColumn;
                                 }
-                                let addColumnButton = `<button class="column-add">Add Column</button>`;
+                                let addColumnButton = `<button id="board_col_id_`+board.id+`" class="column-add">Add Column</button>`;
                                 boardColumnContainers[board.id - 1].innerHTML += addColumnButton;
                                 dom.addColumn()
+                                let modal=document.getElementById("titleColField")
+                                let col_title=modal.valueOf()
+                                dom.sendColumnInfo(board.id,col_title)
                             }
                         }
-
-                        
                     })
                 
                 console.log(expand_button.id);
@@ -180,6 +181,30 @@ export let dom = {
             modal.style.display = "none";
         })
     },
+    sendColumnInfo: function (col_id,title){
+
+            let data = {
+                'id': col_id ,
+                'title': title ,
+             }
+
+            let settings = {
+                'method': 'POST',
+                'headers': {
+                'Content-Type' : 'application/json',
+                'Accept' : 'application/json'
+            },
+            body: JSON.stringify(data),
+            }
+
+        fetch('/add-column',settings)
+            .then((serverResponse)=>{
+                return serverResponse.json();
+            })
+            .then((jsonResponse)=>{
+                console.log(jsonResponse);
+            })
+    }
     // here comes more features
 };
 

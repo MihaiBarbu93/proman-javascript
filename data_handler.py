@@ -43,7 +43,7 @@ def update_board(cursor, data):
     """)
 
 @connection.connection_handler
-def _insert_column(cursor, title):
+def _insert_column(cursor, title,board_id):
     cursor.execute(f'''
-                    INSERT INTO statuses VALUES  (default,'{title}');
+                    INSERT INTO statuses VALUES  (default,'{title}',{board_id});
                     ''')

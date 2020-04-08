@@ -17,7 +17,6 @@ def index():
 @app.route('/update-board', methods=["POST"])
 def update_board():
     request_content = request.json
-    print(request_content['id'][-1])
     data = {'id': request_content['id'][-1], 'title': request_content['title']}
     data_handler.update_board(data)
     return jsonify({'success': True})
@@ -53,8 +52,9 @@ def add_board():
 @app.route('/add-column', methods=['GET','POST'])
 def add_column():
     if request.method == 'POST':
-        title=request.form['board_title']
-        data_handler._insert_column(title)
+        board_id=request.json
+        print(board_id)
+        data_handler._insert_column("ceva",board_id[0]['id'])
         return redirect(url_for('index'))
 
 

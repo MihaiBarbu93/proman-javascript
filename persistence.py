@@ -11,7 +11,6 @@ def _read_table(cursor,table_name):
                     SELECT * FROM {table_name}
                     ''')
     result = cursor.fetchall()
-    print(result)
     return result
 
 
