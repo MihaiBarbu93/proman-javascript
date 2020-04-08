@@ -25,8 +25,8 @@ export let dom = {
         for (let board of boards) {
             let boardLi = `
                 <section class="board">
-                    <div class="board-header"><span class="board-title" id="board-title-`+board.id+`" contenteditable="true" >
-                        <span class="board-title">${board.title}</span>
+                    <div class="board-header">
+                        <span class="board-title" id="board-title-\`+board.id+\`" contenteditable="true">${board.title}</span>
                         <button class="board-add">Add Card</button>
                         <button id="${board.id}" class="board-toggle btn btn-link" data-toggle="collapse" data-target="#collapse${board.id}" aria-expanded="false" aria-controls="collapseOne">
                         <i class="fas fa-chevron-down"></i></button>

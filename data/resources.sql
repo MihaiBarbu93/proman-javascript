@@ -1,3 +1,8 @@
+DROP TABLE cards;
+DROP TABLE statuses;
+DROP TABLE boards;
+
+
 CREATE TABLE boards(
         id serial not null ,
         title varchar(20) NOT NULL UNIQUE,
