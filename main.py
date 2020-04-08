@@ -26,7 +26,6 @@ def get_boards():
 @app.route("/get-cards/<int:board_id>")
 @json_response
 def get_cards_for_board(board_id: int):
-    print(board_id)
     """
     All cards that belongs to a board
     :param board_id: id of the parent board
@@ -40,6 +39,10 @@ def add_board():
         title=request.form['board_title']
         data_handler._insert_board(title)
         return redirect(url_for('index'))
+
+@app.route("/get-statuses")
+def get_all_statuses():
+    print(data_handler.get_all_statuses)
 
 
 

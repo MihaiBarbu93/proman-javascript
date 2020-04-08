@@ -9,6 +9,7 @@ export let dom = {
         // retrieves boards and makes showBoards called
         dataHandler.getBoards(function(boards){
             dom.showBoards(boards);
+            dom.loadColumns(boards);
         });
     },
     showBoards: function (boards) {
@@ -19,30 +20,57 @@ export let dom = {
         let boardsContainer = document.querySelector('.board-container');
 
 
-
         for(let board of boards){
             let boardLi = `
                 <section class="board">
-                <div class="board-header"><span class="board-title">${board.title}</span>
-                <button class="board-add">Add Card</button>
-                <button id="${board.id}" class="board-toggle"><i class="fas fa-chevron-down"></i></button>
-                </>
+                    <div class="board-header">
+                        <span class="board-title">${board.title}</span>
+                        <button class="board-add">Add Card</button>
+                        <button id="${board.id}" class="board-toggle btn btn-link" data-toggle="collapse" data-target="#collapse${board.id}" aria-expanded="false" aria-controls="collapseOne">
+                        <i class="fas fa-chevron-down"></i></button>
+                    </div>
+                    <div id="collapse${board.id}" class="collapse show">
+                        <div class="board-columns"></div>
+                    </div>
                 </section>
                 
             `;
 
             boardsContainer.innerHTML += boardLi
+            
 
         }
         let expand_buttons = document.getElementsByClassName("board-toggle")
-        for (let expand_button of expand_buttons){
-            expand_button.addEventListener('click', function(e) {
+        console.log(expand_buttons)
+        for (let expand_button of expand_buttons) {
+            expand_button.addEventListener('click', function (e) {
 
-                dom.loadCards(e.target.id)
+                
+                console.log(expand_button.id);
+
+                dom.loadCards(expand_button.id)
             })
-        }},
+        }
+    },
+
+    loadColumns: function () {
+
+        let statuses = ['New', 'In progress', 'Testing', 'Done']
+        const boardColumnsContainers = document.querySelectorAll(".board-columns");
+        for (let boardColumnsContainer of boardColumnsContainers) {
+            for (let i = 0; i < statuses.length; i++) {
+                let boardColumn = `<div class="board-column">
+                    <div class="board-column-title">${statuses[i]}</div>
+                </div>`;
+                
+                boardColumnsContainer.innerHTML += boardColumn;
+            }
+        }
+    },
+    
+
     loadCards: function (boardId) {
-        $.get(`/get-cards/${boardId}`, function(data){
+        $.get(`/get-cards/${boardId}`, function (data) {
                 dom.showCards(data, boardId)
 
             })
