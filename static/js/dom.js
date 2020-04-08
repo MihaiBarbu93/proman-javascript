@@ -11,7 +11,6 @@ export let dom = {
         dataHandler.getBoards(function(boards){
             dom.showBoards(boards);
             dom.showColumns(boards);
-            dom.addColumn();
         });
     },
     showBoards: function (boards) {
@@ -23,10 +22,13 @@ export let dom = {
 
 
         for (let board of boards) {
-            let boardLi = `
+            let boardLi =
+              `
                 <section class="board">
                     <div class="board-header">
-                        <span class="board-title" id="board-title-\`+board.id+\`" contenteditable="true">${board.title}</span>
+                        <span class="board-title" id="board-title-` +
+              board.id +
+              `" contenteditable="true">${board.title}</span>
                         <button class="board-add">Add Card</button>
                         <button id="${board.id}" class="board-toggle btn btn-link collapsed" data-toggle="collapse" data-target="#collapse${board.id}" aria-expanded="false" aria-controls="collapseOne">
                         <i class="fas fa-chevron-down"></i></button>
@@ -74,7 +76,7 @@ export let dom = {
 
                 fetch('/get-statuses')
                     .then((response) => response.json())
-                    .then(responseJson => { 
+                    .then(responseJson => {
 
                         for (let i = 0; i < responseJson.length; i++) {
                             allStatuses.push(responseJson[i]['title']);
@@ -86,25 +88,23 @@ export let dom = {
                                 
                                 boardColumnContainers[board.id - 1].innerHTML = "";
                                 for (let i = 0; i < allStatuses.length; i++) {
-                                  let boardColumn = `<div class="board-column">
+                                    let boardColumn = `<div class="board-column">
                                 <div class="board-column-title">${allStatuses[i]}</div>
                                 </div>`;
 
-                                  boardColumnContainers[board.id - 1].innerHTML += boardColumn;
+                                    boardColumnContainers[board.id - 1].innerHTML += boardColumn;
+                                    
                                 }
-                                let addColumnButton = `<button id="board_col_id_`+board.id+`" class="column-add">Add Column</button>`;
+                                let addColumnButton = `<button id="board_col_id_`+board.id+`" class="column-add" data-board-id="`+board.id+`">Add Column</button>`;
                                 boardColumnContainers[board.id - 1].innerHTML += addColumnButton;
                                 dom.addColumn()
-                                let modal=document.getElementById("titleColField")
-                                let col_title=modal.valueOf()
-                                dom.sendColumnInfo(board.id,col_title)
                             }
                         }
                     })
                 
                 console.log(expand_button.id);
 
-                dom.loadCards(expand_button.id)
+                // dom.loadCards(expand_button.id)
             })
         }
     },
@@ -113,15 +113,15 @@ export let dom = {
     addColumn: function () {
 
         let addColumnButtons = document.getElementsByClassName("column-add");
-        console.log(addColumnButtons)
 
         for (let addColumnButton of addColumnButtons) {
-            console.log(addColumnButton)
             addColumnButton.addEventListener('click', async function () {
                 let modal = document.getElementById("addColumnModal");
                 let close_btn = document.getElementById("close_column_modal");
                 addColumnButton.addEventListener("click", function (event) {
                 modal.style.display = "block";
+                let boardId = $(this).data('boardId');
+                $(".modal-body #boardId").val(boardId);
                 });
                 close_btn.addEventListener("click", function (event) {
                 modal.style.display = "none";

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for,request,redirect, jsonify
+from flask import Flask, render_template, url_for, request, redirect, jsonify
 from util import json_response
 
 import data_handler, persistence
@@ -49,12 +49,12 @@ def add_board():
         data_handler._insert_board(title)
         return redirect(url_for('index'))
 
-@app.route('/add-column', methods=['GET','POST'])
+@app.route('/add-column', methods=['GET', 'POST'])
 def add_column():
     if request.method == 'POST':
-        board_id=request.json
-        print(board_id)
-        data_handler._insert_column("ceva",board_id[0]['id'])
+        column_title = request.form['column_title']
+        board_id = request.form['boardId']
+        data_handler._insert_column(column_title, board_id)
         return redirect(url_for('index'))
 
 

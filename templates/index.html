@@ -68,6 +68,7 @@
               </div>
               <div class="modal-body">
                   <form method="POST" id="boardModalForm" action="/add-column">
+                      <input type="hidden" name="boardId" id="boardId">
                       <label for="titleColField">Title:</label><br>
                       <input id="titleColField" type="text" placeholder="Title..." name="column_title">
                       <input id="submit_board" type="submit" value="Submit">
