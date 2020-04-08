@@ -28,10 +28,10 @@ export let dom = {
                     <div class="board-header">
                         <span class="board-title" id="board-title-\`+board.id+\`" contenteditable="true">${board.title}</span>
                         <button class="board-add">Add Card</button>
-                        <button id="${board.id}" class="board-toggle btn btn-link" data-toggle="collapse" data-target="#collapse${board.id}" aria-expanded="false" aria-controls="collapseOne">
+                        <button id="${board.id}" class="board-toggle btn btn-link collapsed" data-toggle="collapse" data-target="#collapse${board.id}" aria-expanded="false" aria-controls="collapseOne">
                         <i class="fas fa-chevron-down"></i></button>
                     </div>
-                    <div id="collapse${board.id}" class="collapse show">
+                    <div id="collapse${board.id}" class="collapse">
                         <div class="board-columns"></div>
                     </div>
                 </section>
@@ -61,7 +61,6 @@ export let dom = {
     },
 
     showColumns : function (boards) {
-
 
 
         let boardColumnContainers = document.querySelectorAll('.board-columns');
@@ -94,7 +93,8 @@ export let dom = {
                                   boardColumnContainers[board.id - 1].innerHTML += boardColumn;
                                 }
                                 let addColumnButton = `<button class="column-add">Add Column</button>`;
-                                boardColumnContainers[board.id -1].innerHTML += addColumnButton;
+                                boardColumnContainers[board.id - 1].innerHTML += addColumnButton;
+                                dom.addColumn()
                             }
                         }
 
@@ -115,8 +115,16 @@ export let dom = {
         console.log(addColumnButtons)
 
         for (let addColumnButton of addColumnButtons) {
+            console.log(addColumnButton)
             addColumnButton.addEventListener('click', async function () {
-                
+                let modal = document.getElementById("addColumnModal");
+                let close_btn = document.getElementById("close_column_modal");
+                addColumnButton.addEventListener("click", function (event) {
+                modal.style.display = "block";
+                });
+                close_btn.addEventListener("click", function (event) {
+                modal.style.display = "none";
+                });     
             })
         }
 

@@ -30,7 +30,7 @@ def get_cards_for_board(board_id):
 
 
 @connection.connection_handler
-def _insert_board(cursor,title):
+def _insert_board(cursor, title):
     cursor.execute(f'''
                     INSERT INTO boards VALUES  (default,'{title}');
                     ''')
@@ -41,3 +41,9 @@ def update_board(cursor, data):
     cursor.execute(f"""
         UPDATE boards SET title = '{data["title"]}' WHERE id = {data["id"]};
     """)
+
+@connection.connection_handler
+def _insert_column(cursor, title):
+    cursor.execute(f'''
+                    INSERT INTO statuses VALUES  (default,'{title}');
+                    ''')

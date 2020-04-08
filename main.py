@@ -50,6 +50,13 @@ def add_board():
         data_handler._insert_board(title)
         return redirect(url_for('index'))
 
+@app.route('/add-column', methods=['GET','POST'])
+def add_column():
+    if request.method == 'POST':
+        title=request.form['board_title']
+        data_handler._insert_column(title)
+        return redirect(url_for('index'))
+
 
 @app.route("/get-statuses")
 def get_all_statuses():
