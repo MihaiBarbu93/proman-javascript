@@ -34,3 +34,10 @@ def _insert_board(cursor,title):
     cursor.execute(f'''
                     INSERT INTO boards VALUES  (default,'{title}');
                     ''')
+
+
+@connection.connection_handler
+def update_board(cursor, data):
+    cursor.execute(f"""
+        UPDATE boards SET title = '{data["title"]}' WHERE id = {data["id"]};
+    """)

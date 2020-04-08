@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for,request,redirect
+from flask import Flask, render_template, url_for,request,redirect, jsonify
 from util import json_response
 
 import data_handler
@@ -12,6 +12,15 @@ def index():
     This is a one-pager which shows all the boards and cards
     """
     return render_template('index.html')
+
+@app.route('/update-board', methods=["POST"])
+def update_board():
+    request_content = request.json
+    print(request_content['id'][-1])
+    data = {'id': request_content['id'][-1], 'title': request_content['title']}
+    data_handler.update_board(data)
+    return jsonify({'success': True})
+
 
 
 @app.route("/get-boards")
