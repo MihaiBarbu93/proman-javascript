@@ -9,7 +9,8 @@ export let dom = {
         // retrieves boards and makes showBoards called
         dataHandler.getBoards(function(boards){
             dom.showBoards(boards);
-            dom.loadColumns(boards);
+            dom.showColumns(boards);
+            dom.addColumn();
         });
     },
     showBoards: function (boards) {
@@ -20,7 +21,7 @@ export let dom = {
         let boardsContainer = document.querySelector('.board-container');
 
 
-        for(let board of boards){
+        for (let board of boards) {
             let boardLi = `
                 <section class="board">
                     <div class="board-header">
@@ -40,11 +41,48 @@ export let dom = {
             
 
         }
-        let expand_buttons = document.getElementsByClassName("board-toggle")
-        console.log(expand_buttons)
-        for (let expand_button of expand_buttons) {
-            expand_button.addEventListener('click', function (e) {
+    },
 
+    showColumns : function (boards) {
+
+
+
+        let boardColumnContainers = document.querySelectorAll('.board-columns');
+
+
+        let expand_buttons = document.getElementsByClassName("board-toggle")
+        for (let expand_button of expand_buttons) {
+            expand_button.addEventListener('click', async function (e) {
+
+                let allStatuses = []
+
+                fetch('/get-statuses')
+                    .then((response) => response.json())
+                    .then(responseJson => { 
+
+                        for (let i = 0; i < responseJson.length; i++) {
+                            allStatuses.push(responseJson[i]['title']);
+                        }
+
+                        for (let board of boards) {
+                            if (board.id == expand_button.id) {
+                                console.log('egal')
+                                
+                                boardColumnContainers[board.id - 1].innerHTML = "";
+                                for (let i = 0; i < allStatuses.length; i++) {
+                                  let boardColumn = `<div class="board-column">
+                                <div class="board-column-title">${allStatuses[i]}</div>
+                                </div>`;
+
+                                  boardColumnContainers[board.id - 1].innerHTML += boardColumn;
+                                }
+                                let addColumnButton = `<button class="column-add">Add Column</button>`;
+                                boardColumnContainers[board.id -1].innerHTML += addColumnButton;
+                            }
+                        }
+
+                        
+                    })
                 
                 console.log(expand_button.id);
 
@@ -53,21 +91,19 @@ export let dom = {
         }
     },
 
-    loadColumns: function () {
 
-        let statuses = ['New', 'In progress', 'Testing', 'Done']
-        const boardColumnsContainers = document.querySelectorAll(".board-columns");
-        for (let boardColumnsContainer of boardColumnsContainers) {
-            for (let i = 0; i < statuses.length; i++) {
-                let boardColumn = `<div class="board-column">
-                    <div class="board-column-title">${statuses[i]}</div>
-                </div>`;
+    addColumn: function () {
+
+        let addColumnButtons = document.getElementsByClassName("column-add");
+        console.log(addColumnButtons)
+
+        for (let addColumnButton of addColumnButtons) {
+            addColumnButton.addEventListener('click', async function () {
                 
-                boardColumnsContainer.innerHTML += boardColumn;
-            }
+            })
         }
+
     },
-    
 
     loadCards: function (boardId) {
         $.get(`/get-cards/${boardId}`, function (data) {

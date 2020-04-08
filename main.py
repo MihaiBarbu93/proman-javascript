@@ -1,7 +1,8 @@
 from flask import Flask, render_template, url_for,request,redirect
 from util import json_response
 
-import data_handler
+import data_handler, persistence
+import json
 
 app = Flask(__name__)
 
@@ -40,9 +41,12 @@ def add_board():
         data_handler._insert_board(title)
         return redirect(url_for('index'))
 
+
 @app.route("/get-statuses")
 def get_all_statuses():
-    print(data_handler.get_all_statuses)
+    all_statuses = persistence.get_statuses()
+    all_statuses_json = json.dumps(all_statuses)
+    return all_statuses_json
 
 
 

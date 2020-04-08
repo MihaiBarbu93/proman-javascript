@@ -26,7 +26,6 @@ def get_cards_for_board(board_id):
         if card['board_id'] == board_id:
             card['status_id'] = get_card_status(card['status_id'])  # Set textual status for the card
             matching_cards.append(card)
-    print(matching_cards)
     return matching_cards
 
 
@@ -35,12 +34,3 @@ def _insert_board(cursor,title):
     cursor.execute(f'''
                     INSERT INTO boards VALUES  (default,'{title}');
                     ''')
-
-
-@connection.connection_handler
-def get_all_statuses(cursor):
-    cursor.execute(f'''
-    SELECT title from statuses;
-    ''')
-    statuses = cursor.fetchall()
-    return statuses
