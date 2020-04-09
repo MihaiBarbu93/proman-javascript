@@ -59,6 +59,18 @@ def add_column():
         return redirect(url_for('index'))
 
 
+@app.route('/add-card', methods=['POST'])
+def add_card():
+    if request.method == 'POST':
+        print(request.form)
+        card_title = request.form.get('card_title')
+        card_status = request.form.get('card_status')
+        card_priority = request.form.get('card_priority')
+        board_id = request.form.get('boardId')
+        data_handler._insert_card(card_title, card_status, card_priority, board_id)
+        return redirect('/')
+
+
 @app.route("/get-statuses")
 def get_all_statuses():
     all_statuses = persistence.get_statuses()

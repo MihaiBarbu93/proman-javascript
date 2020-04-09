@@ -47,3 +47,9 @@ def _insert_column(cursor, title,board_id):
     cursor.execute(f'''
                     INSERT INTO statuses VALUES  (default,'{title}',{board_id});
                     ''')
+
+
+@connection.connection_handler
+def _insert_card(cursor, card_title, card_status, card_priority, board_id):
+    query = f""" INSERT INTO cards VALUES (DEFAULT, {int(board_id)}, '{card_title}', {int(card_status)}, {int(card_priority)}); """
+    cursor.execute(query)
