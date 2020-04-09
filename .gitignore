@@ -88,3 +88,6 @@ crashlytics-build.properties
 fabric.properties
 
 .DS_Store
+
+.mypy_cache
+.vscode
