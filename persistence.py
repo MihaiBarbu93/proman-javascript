@@ -14,6 +14,9 @@ def _read_table(cursor,table_name):
     return result
 
 
+
+
+
 # def _get_data(data_type, file, force):
 #     """
 #     Reads defined type of data from file or cache

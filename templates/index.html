@@ -12,24 +12,71 @@
         <link rel="icon" type="image/png" sizes="96x96" href="{{ url_for('static', filename='favicon/favicon-96x96.png') }}">
         <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon/favicon-16x16.png') }}">
 
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/solid.css" integrity="sha384-rdyFrfAIC05c5ph7BKz3l5NG5yEottvO/DQ0dCrwD8gzeQDjYBHNr1ucUpQuljos" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/fontawesome.css" integrity="sha384-u5J7JghGz0qUrmEsWzBQkfvc8nK3fUT7DCaQzNQ+q4oEXhGSx+P2OqjWsfIRB8QT" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/solid.css" integrity="sha384-rdyFrfAIC05c5ph7BKz3l5NG5yEottvO/DQ0dCrwD8gzeQDjYBHNr1ucUpQuljos" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/fontawesome.css" integrity="sha384-u5J7JghGz0qUrmEsWzBQkfvc8nK3fUT7DCaQzNQ+q4oEXhGSx+P2OqjWsfIRB8QT" crossorigin="anonymous">
 
-     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/design.css') }}">
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/design.css') }}">
         <script type="module" src="{{ url_for('static', filename='js/main.js') }}" defer></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     </head>
     <body>
         <h1>ProMan</h1>
 
-        <button id="new_board_btn">New Board</button>
+        <button id="new_board_btn" data-toogle="modal" data-target="#myModal">New Board</button>
 
 
-    <div class="board-container">
+        <div class="board-container">
 
 
+        </div>
+
+        
+        <div class="modal" id="myModal" role="dialog">
+          <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button id="close_modal" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+              <div class="modal-body">
+                  <form method="POST" id="boardModalForm" action="/add-board">
+                      <label for="titleField">Title:</label><br>
+                      <input id="titleField" type="text" placeholder="Title..." name="board_title">
+                      <input id="submit_board" type="submit" value="Submit">
+                  </form>
+              </div>
             </div>
+
+          </div>
+        </div>
+
+        <div class="modal" id="addColumnModal" role="dialog">
+          <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button id="close_column_modal" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+              <div class="modal-body">
+                  <form method="POST" id="boardModalForm" action="/add-column">
+                      <input type="hidden" name="boardId" id="boardId">
+                      <label for="titleColField">Title:</label><br>
+                      <input id="titleColField" type="text" placeholder="Title..." name="column_title">
+                      <input id="submit_board" type="submit" value="Submit">
+                  </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
     </body>
 </html>
