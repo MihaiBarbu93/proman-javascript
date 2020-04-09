@@ -78,37 +78,5 @@
           </div>
         </div>
 
-        <div class="modal" id="addCardModal" role="dialog">
-          <div class="modal-dialog">
-
-            <!-- Modal content-->
-            <div class="modal-content">
-              <div class="modal-header">
-                <button id="close_column_modal" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              </div>
-              <div class="modal-body">
-                  <form method="POST" id="cardModalForm" action="/add-card">
-                      <input type="hidden" name="boardId" id="card-boardId">
-                      <label for="titleColField">Title:</label><br>
-                      <input id="titleColField" type="text" placeholder="Title..." name="card_title">
-                      <select name="card_status">
-                        <option selected disabled>--Status--</option>
-                        <option value="1">New</option>
-                        <option value="2">In Progress</option>
-                        <option value="3">Testing</option>
-                        <option value="4">Done</option>
-                      </select>
-                      <select name="card_priority">
-                        <option selected disabled>--Priority--</option>
-                        <option value="0">0</option>
-                        <option value="1">1</option>
-                      </select>
-                      <input id="submit_card" type="submit" value="Submit">
-                  </form>
-              </div>
-            </div>
-          </div>
-        </div>
-
     </body>
 </html>

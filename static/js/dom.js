@@ -217,23 +217,6 @@ export let dom = {
 
     addCard: function(btnPressed){
         console.log(btnPressed)
-        const boardId = btnPressed.id.replace('add-card-btn-', '')
-        const hiddenInput = document.getElementById('card-boardId')
-        hiddenInput.value = boardId
-        let modal = document.getElementById('addCardModal');
-        
-        modal.style.display = 'block';
-        let closeBtn = document.getElementById('close_column_modal');
-        closeBtn.addEventListener('click', function(){
-            modal.style.display = 'none';
-        })
-
-        const submitBtn = document.getElementById('submit_card');
-        submitBtn.addEventListener('click', function(){
-            modal.style.display = 'none';
-            dom.loadCards(boardId)
-        })
-
     },
 
     addBoardModal: function () {
