@@ -1,6 +1,7 @@
 DROP TABLE cards;
 DROP TABLE statuses;
 DROP TABLE boards;
+DROP TABLE users;
 
 
 CREATE TABLE boards(
@@ -25,6 +26,12 @@ CREATE TABLE cards(
         PRIMARY KEY (id),
         FOREIGN KEY (board_id) REFERENCES boards(id),
         FOREIGN KEY (status_id) REFERENCES statuses(id)
+);
+
+CREATE TABLE users(
+        id serial NOT NULL ,
+        username varchar(50),
+        password varchar(200)
 );
 
 INSERT INTO boards (title) VALUES('Board1');

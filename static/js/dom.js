@@ -204,7 +204,132 @@ export let dom = {
             .then((jsonResponse)=>{
                 console.log(jsonResponse);
             })
-    }
+    },
+    registerModal: function () {
+        let username=document.getElementById("orangeForm-name")
+        let password=document.getElementById("orangeForm-pass")
+        let reg_modal_btn=document.getElementById("reg_btn")
+        let error_mss=document.getElementById("error_message")
+        let modal=document.getElementById("modalRegisterForm")
+        let close_btn=document.getElementById("reg_md_close")
+        close_btn.addEventListener("click",function (event) {
+            error_mss.style.display="none"
+        })
+        reg_modal_btn.addEventListener("click",function (event) {
+            event.preventDefault()
+            let data = {
+                'username': username.value
+             }
+            fetch(`/check-usr-existence?username=${data['username']}`)
+                    .then((serverResponse)=>{
+                    return serverResponse.json();
+            })
+                    .then((jsonResponse)=>{
+                    console.log(jsonResponse);
+                    if (jsonResponse['state'] == "Exist"){
+                        error_mss.style.display="block"
+                        username.value=""
+                        password.value=""
+
+
+                    }
+                    else {
+                        error_mss.style.display="none"
+                        let data2 = {
+                            'username': username.value,
+                            'password': password.value
+                            }
+
+                        let settings = {
+                            'method': 'POST',
+                            'headers': {
+                            'Content-Type' : 'application/json',
+                            'Accept' : 'application/json'
+                        },
+                        "body": JSON.stringify(data2),
+                        }
+
+                        fetch('/register',settings)
+                            .then((serverResponse)=>{
+                                return serverResponse.json();
+                            })
+                            .then((serverResponse)=>{
+                                if (serverResponse.success){
+                                    modal.classList.remove("show")
+                                    modal.nextElementSibling.classList.remove("show")
+                                    username.value=""
+                                    password.value=""
+                                }
+                            })
+
+                    }
+            })
+        })
+    },
+    loginModal: function () {
+        let username=document.getElementById("defaultForm-email")
+        let password=document.getElementById("defaultForm-pass")
+        let login_modal_btn=document.getElementById("login_btn")
+        let error_mss=document.getElementById("login_error_message")
+        let modal=document.getElementById("modalLoginForm")
+        let login_close_btn=document.getElementById("log_close_btn")
+        login_close_btn.addEventListener("click",function (event){
+            error_mss.style.display="none"
+        })
+        login_modal_btn.addEventListener("click",function (event) {
+            event.preventDefault()
+            let data = {
+                'username': username.value,
+                'password':password.value
+             }
+            fetch(`/check-login-credentials?username=${data['username']}&password=${data['password']}`)
+                    .then((serverResponse)=>{
+                    return serverResponse.json();
+            })
+                    .then((jsonResponse)=>{
+                    console.log(jsonResponse);
+                    if (jsonResponse['state'] == "Incorrect"){
+                        error_mss.style.display="block"
+                        username.value=""
+                        password.value=""
+
+
+                    }
+                    else {
+                        error_mss.style.display="none"
+                        let data3 = {
+                            'username': username.value,
+                            'password': password.value
+                            }
+                        let settings = {
+                            'method': 'POST',
+                            'headers': {
+                            'Content-Type' : 'application/json',
+                            'Accept' : 'application/json'
+                        },
+                        "body": JSON.stringify(data3),
+                        }
+
+                        fetch('/login',settings)
+                            .then((serverResponse)=>{
+                                return serverResponse.json();
+                            })
+                            .then((serverResponse)=>{
+                                if (serverResponse.success){
+                                    modal.classList.remove("show")
+                                    modal.nextElementSibling.classList.remove("show")
+                                    modal.style.display="none"
+                                    username.value=""
+                                    password.value=""
+                                    window.location.href="/"
+                                }
+                            })
+
+                    }
+            })
+        })
+    },
+
     // here comes more features
 };
 

@@ -1,4 +1,4 @@
-import persistence,connection
+import persistence,connection,bcrypt
 
 
 def get_card_status(status_id):
@@ -47,3 +47,49 @@ def _insert_column(cursor, title,board_id):
     cursor.execute(f'''
                     INSERT INTO statuses VALUES  (default,'{title}',{board_id});
                     ''')
+
+
+@connection.connection_handler
+def insert_user(cursor,name,password):
+    cursor.execute("""
+                        INSERT INTO users (username, password)
+                        VALUES (%s,%s);
+                        """,(name,password))
+
+
+@connection.connection_handler
+def check_credentials(cursor, user):
+    cursor.execute(f"""
+                    SELECT password FROM users
+                    WHERE username = '{user}';
+                    """)
+    result = cursor.fetchone()
+    return result
+
+def hash_password(plain_text_password):
+    hashed_bytes = bcrypt.hashpw(plain_text_password.encode('utf-8'), bcrypt.gensalt())
+    return hashed_bytes.decode('utf-8')
+
+
+def verify_password(plain_text_password, hashed_password):
+    hashed_bytes_password = hashed_password.encode('utf-8')
+    return bcrypt.checkpw(plain_text_password.encode('utf-8'), hashed_bytes_password)
+
+def check_user_existence(reg_user):
+    for users in persistence._read_table('users'):
+        if reg_user == users['username']:
+            return True
+        else:
+            return False
+
+@connection.connection_handler
+def confirm_user(cursor, usrname):
+    cursor.execute(f"""
+                    SELECT username FROM users
+                    WHERE username = '{usrname}'; 
+                    """)
+    result = cursor.fetchall()
+    if result != []:
+        return True
+    else:
+        return False
