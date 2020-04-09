@@ -24,13 +24,13 @@ export let dom = {
         for (let board of boards) {
             let boardLi =
               `
-                <section class="board">
+                <section class="board" id="board` +board.id +`">
                     <div class="board-header">
                         <span class="board-title" id="board-title-` +
               board.id +
               `" contenteditable="true">${board.title}</span>
                         <button class="board-add">Add Card</button>
-                        <button id="${board.id}" class="board-toggle btn btn-link collapsed" data-toggle="collapse" data-target="#collapse${board.id}" aria-expanded="false" aria-controls="collapseOne">
+                        <button id="${board.id}" class="board-toggle btn btn-link" data-toggle="collapse" data-target="#collapse${board.id}" aria-expanded="false" aria-controls="collapseOne">
                         <i class="fas fa-chevron-down"></i></button>
                     </div>
                     <div id="collapse${board.id}" class="collapse">
@@ -42,9 +42,7 @@ export let dom = {
 
             boardsContainer.innerHTML += boardLi
             
-
         }
-
 
 
         let expand_buttons = document.getElementsByClassName("board-toggle")
@@ -78,17 +76,23 @@ export let dom = {
                     .then((response) => response.json())
                     .then(responseJson => {
 
-                        for (let i = 0; i < responseJson.length; i++) {
-                            allStatuses.push(responseJson[i]['title']);
+                        let boardsCollection = document.getElementsByClassName("board");
+                        for (let board of boardsCollection) {
+                            if (board.id.substr(-1) == expand_button.id) {
+                                for (let i = 0; i < responseJson.length; i++) {
+                                    if (parseInt(responseJson[i]["board_id"]) == 0 || board.id.substr(-1) == responseJson[i]["board_id"]) {
+                                        allStatuses.push(responseJson[i]["title"]);
+                                    }
+                                }
+                            }
                         }
 
                         for (let board of boards) {
                             if (board.id == expand_button.id) {
-                                console.log('egal')
                                 
                                 boardColumnContainers[board.id - 1].innerHTML = "";
                                 for (let i = 0; i < allStatuses.length; i++) {
-                                    let boardColumn = `<div class="board-column">
+                                    let boardColumn = `<div class="board-column" id="board-column`+responseJson[i]['id']+`">
                                 <div class="board-column-title">${allStatuses[i]}</div>
                                 </div>`;
 
@@ -101,10 +105,6 @@ export let dom = {
                             }
                         }
                     })
-                
-                console.log(expand_button.id);
-
-                // dom.loadCards(expand_button.id)
             })
         }
     },
