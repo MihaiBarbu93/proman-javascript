@@ -6,11 +6,10 @@ import psycopg2.extras
 def get_connection_string():
     # setup connection string
     # to do this, please define these environment variables first
-    user_name = 'bogda'
-    password = 'bogdan'
+    user_name = 'Silviu'
+    password = 'delviopostgreS'
     host = 'localhost'
     database_name = 'proman'
-
     env_variables_defined = user_name and password and host and database_name
 
     if env_variables_defined:
