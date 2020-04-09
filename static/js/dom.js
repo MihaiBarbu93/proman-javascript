@@ -96,8 +96,6 @@ export let dom = {
                                 }
                             }
                         }
-
-                        allStatuses = allStatuses.reverse()
                         for (let board of boards) {
                             if (board.id == boardId) {
                                 
