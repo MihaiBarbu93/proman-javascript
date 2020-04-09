@@ -1,4 +1,4 @@
-import { dom } from "./dom.js";
+import { dom } from "./dom.js?ddoskdlkslkdk";
 
 // This function is to initialize the application
 function init() {

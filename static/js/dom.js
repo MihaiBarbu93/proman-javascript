@@ -51,6 +51,8 @@ export let dom = {
 
                 dom.updateBoardTitle(e.target.id)})}
 
+
+
         const addCardButtons = document.getElementsByClassName('board-add');
         for (let btn of addCardButtons){
             btn.addEventListener('click', function(){
@@ -144,7 +146,9 @@ export let dom = {
     },
 
     loadCards: function (boardId) {
-         // retrieves cards and makes showCards called
+
+         // retrieves cards and makes showCards calle
+
         const requestCards = new XMLHttpRequest();
         requestCards.onreadystatechange = function(){
             if(requestCards.readyState == 4 && requestCards.status == 200){
@@ -155,6 +159,51 @@ export let dom = {
         requestCards.open('GET', `/get-cards/${boardId}`, true);
         requestCards.send();
 
+        let Cardtitles = document.getElementsByClassName("card-title")
+        console.log(Cardtitles)
+        for (let title of Cardtitles){
+            console.log(title)
+
+            title.addEventListener('keypress', function(e){
+                if (e.keyCode === 13) {
+                    e.preventDefault();
+                    dom.updateCardTitle(e.target.id)
+                }
+
+            });
+        }
+
+    },
+
+    test: function(id){
+      console.log(id)
+    },
+
+    updateCardTitle: function (CardId){
+            let cardTitle = CardId;
+            console.log("wwwwwwwwwwwwwwwwwwwwwwwwwwwadsasacasc",cardTitle)
+            let titleValue = document.getElementById(cardTitle);
+            let data = {
+                'id': CardId,
+                'title': titleValue.innerHTML,
+             }
+
+            let settings = {
+                'method': 'POST',
+                'headers': {
+                'Content-Type' : 'application/json',
+                'Accept' : 'application/json'
+            },
+            body: JSON.stringify(data),
+            }
+
+        fetch('/update-card',settings)
+            .then((serverResponse)=>{
+                return serverResponse.json();
+            })
+            .then((jsonResponse)=>{
+                console.log(jsonResponse);
+            })
     },
 
     updateBoardTitle: function (boardId){
@@ -205,11 +254,12 @@ export let dom = {
                     cardElement.appendChild(cardRemove);
                     let cardTitle = document.createElement('div');
                     cardTitle.setAttribute('class', 'card-title');
+                    cardTitle.setAttribute('id', 'card-id-'+card['id']);
+                    cardTitle.setAttribute('contenteditable', true);
                     cardTitle.textContent = card['title'];
                     cardElement.appendChild(cardTitle);
-                    console.log(cardElement)
                     boardCol.childNodes[3].appendChild(cardElement);
-                    console.log(boardCol)
+
                 }
             }
         }

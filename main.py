@@ -26,6 +26,13 @@ def update_board():
     data_handler.update_board(data)
     return jsonify({'success': True})
 
+@app.route('/update-card', methods=["POST"])
+def update_card():
+    request_content = request.json
+    data = {'id': request_content['id'][-1], 'title': request_content['title']}
+    data_handler.update_card(data)
+    return jsonify({'success': True})
+
 
 
 @app.route("/get-boards")
