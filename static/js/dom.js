@@ -52,12 +52,12 @@ export let dom = {
 
                 dom.updateBoardTitle(e.target.id)})}
 
-       for (let expand_button of expand_buttons){
-            expand_button.addEventListener('click', function(e) {
-
-                dom.loadCards(e.target.id)
-            })
-        }
+        for (let expand_button of expand_buttons){
+                expand_button.addEventListener('click', function(e) {
+                    
+                    dom.loadCards(parseInt(e.target.id))
+                })
+            }
     },
 
     showColumns : function (boards) {
@@ -132,10 +132,8 @@ export let dom = {
     },
 
     loadCards: function (boardId) {
-        $.get(`/get-cards/${boardId}`, function (data) {
-                dom.showCards(data, boardId)
-
-            })
+        console.log(boardId)
+            // dom.showCards(data, boardId)
         // retrieves cards and makes showCards called
     },
     updateBoardTitle: function (boardId){
