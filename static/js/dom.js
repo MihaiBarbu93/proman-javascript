@@ -48,7 +48,6 @@ export let dom = {
         let titles = document.getElementsByClassName("board-title")
         for (let title of titles){
             title.addEventListener('blur', function(e){
-
                 dom.updateBoardTitle(e.target.id)})}
 
 
@@ -162,8 +161,6 @@ export let dom = {
         let Cardtitles = document.getElementsByClassName("card-title")
         console.log(Cardtitles)
         for (let title of Cardtitles){
-            console.log(title)
-
             title.addEventListener('keypress', function(e){
                 if (e.keyCode === 13) {
                     e.preventDefault();
@@ -254,7 +251,7 @@ export let dom = {
                     cardElement.appendChild(cardRemove);
                     let cardTitle = document.createElement('div');
                     cardTitle.setAttribute('class', 'card-title');
-                    cardTitle.setAttribute('id', 'card-id-'+card['id']);
+                    cardTitle.setAttribute('id', 'card-title-id-'+card['id']);
                     cardTitle.setAttribute('contenteditable', true);
                     cardTitle.textContent = card['title'];
                     cardElement.appendChild(cardTitle);
