@@ -51,7 +51,6 @@ def get_cards_for_board(board_id: int):
     All cards that belongs to a board
     :param board_id: id of the parent board
     """
-    print(data_handler.get_cards_for_board(board_id))
     return data_handler.get_cards_for_board(board_id)
 
 
@@ -74,7 +73,6 @@ def add_column():
 @app.route('/add-card', methods=['POST'])
 def add_card():
     if request.method == 'POST':
-        print(request.form)
         card_title = request.form.get('card_title')
         card_status = request.form.get('card_status')
         card_priority = request.form.get('card_priority')
@@ -113,7 +111,6 @@ def check_usr_existence():
 def login():
     if request.method == 'POST':
         credentials = request.get_json()
-        print(credentials)
         username = credentials['username']
         session['username']=username
         return jsonify({'success': True})
@@ -122,7 +119,6 @@ def login():
 @app.route("/check-login-credentials", methods=["GET"])
 def check_login_credentials():
     username=request.args.get('username')
-    print("caca"+username)
     password=request.args.get('password')
     if data_handler.confirm_user(username):
         passs = data_handler.check_credentials(username)['password']
@@ -139,6 +135,13 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('index'))
 
+
+@app.route("/update-card-status", methods=['POST'])
+def updated_card_status():
+    card_status = request.get_json()['card_status']
+    card_id = request.get_json()['card_id']
+    data_handler.update_card_status(int(card_id[19:]), int(card_status))
+    return jsonify({"state": "Correct"})
 
 
 def main():
