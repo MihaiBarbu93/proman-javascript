@@ -23,6 +23,9 @@
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.css" />
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.js' defer></script>
+
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/design.css') }}">
         <script type="module" src="{{ url_for('static', filename='js/main.js') }}?adsadasdasdsadasdasbfbfb" defer></script>
     </head>
@@ -34,17 +37,17 @@
     <ul class="navbar-nav mr-auto">
       {% if 'username' in session %}
         <li class="nav-item">
-            <p style="color: whitesmoke; margin-top: 0.4em"><i class="fas fa-user"></i>{{username}}</p>
+            <p style="color: whitesmoke; margin-top: 0.4em"><i class="fas fa-user" style="margin-right: 0.3em"></i>{{username}}</p>
         </li>
         <li class="nav-item">
-            <button type="button" class="btn btn-dark" onclick="location.href='/logout'"><i class="fas fa-sign-out-alt"></i>Logout</button>
+            <button type="button" class="btn btn-dark" onclick="location.href='/logout'"><i class="fas fa-sign-out-alt" style="margin-right: 0.1em"></i>Logout</button>
         </li>
         {% else %}
         <li class="nav-item">
-            <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#modalLoginForm"><i class="fas fa-sign-in-alt"></i>Login</button>
+            <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#modalLoginForm"><i class="fas fa-sign-in-alt" style="margin-right: 0.2em"></i>Login</button>
         </li>
          <li class="nav-item">
-            <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#modalRegisterForm"><i class="fas fa-user-plus"></i>Register</button>
+            <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#modalRegisterForm"><i class="fas fa-user-plus" style="margin-right: 0.2em"></i>Register</button>
         </li>
         {% endif %}
     </ul>
@@ -54,7 +57,7 @@
 </header>
         <h1>ProMan</h1>
 
-        <button id="new_board_btn" data-toogle="modal" data-target="#myModal">New Board</button>
+        <div class="new-board-button-container"><button id="new_board_btn" data-toogle="modal" data-target="#myModal">New Board</button></div>
 
 
         <div class="board-container">
