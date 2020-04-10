@@ -104,3 +104,12 @@ def confirm_user(cursor, usrname):
         return True
     else:
         return False
+
+
+@connection.connection_handler
+def update_card_status(cursor, card_id, status):
+    cursor.execute(f"""
+                    UPDATE cards
+                    SET status_id={status}
+                    WHERE id={card_id}
+    """)
