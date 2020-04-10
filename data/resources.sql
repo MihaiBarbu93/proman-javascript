@@ -12,7 +12,7 @@ CREATE TABLE boards(
 
 CREATE TABLE statuses(
         id serial not null ,
-        title varchar(20),
+        title varchar(200),
         board_id integer,
         PRIMARY KEY (id)
 );

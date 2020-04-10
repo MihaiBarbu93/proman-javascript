@@ -26,6 +26,13 @@ def update_board():
     data_handler.update_board(data)
     return jsonify({'success': True})
 
+@app.route('/update-card', methods=["POST"])
+def update_card():
+    request_content = request.json
+    data = {'id': request_content['id'][-1], 'title': request_content['title']}
+    data_handler.update_card(data)
+    return jsonify({'success': True})
+
 
 
 @app.route("/get-boards")
@@ -44,7 +51,6 @@ def get_cards_for_board(board_id: int):
     All cards that belongs to a board
     :param board_id: id of the parent board
     """
-    print(data_handler.get_cards_for_board(board_id))
     return data_handler.get_cards_for_board(board_id)
 
 
@@ -62,6 +68,17 @@ def add_column():
         board_id = request.form['boardId']
         data_handler._insert_column(column_title, board_id)
         return redirect(url_for('index'))
+
+
+@app.route('/add-card', methods=['POST'])
+def add_card():
+    if request.method == 'POST':
+        card_title = request.form.get('card_title')
+        card_status = request.form.get('card_status')
+        card_priority = request.form.get('card_priority')
+        board_id = request.form.get('boardId')
+        data_handler._insert_card(card_title, card_status, card_priority, board_id)
+        return redirect('/')
 
 
 @app.route("/get-statuses")
@@ -94,7 +111,6 @@ def check_usr_existence():
 def login():
     if request.method == 'POST':
         credentials = request.get_json()
-        print(credentials)
         username = credentials['username']
         session['username']=username
         return jsonify({'success': True})
@@ -103,7 +119,6 @@ def login():
 @app.route("/check-login-credentials", methods=["GET"])
 def check_login_credentials():
     username=request.args.get('username')
-    print("caca"+username)
     password=request.args.get('password')
     if data_handler.confirm_user(username):
         passs = data_handler.check_credentials(username)['password']
@@ -120,6 +135,13 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('index'))
 
+
+@app.route("/update-card-status", methods=['POST'])
+def updated_card_status():
+    card_status = request.get_json()['card_status']
+    card_id = request.get_json()['card_id']
+    data_handler.update_card_status(int(card_id[19:]), int(card_status))
+    return jsonify({"state": "Correct"})
 
 
 def main():

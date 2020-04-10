@@ -27,3 +27,41 @@
     padding: 20px;
     text-align: center;
 }
+
+.column-add {
+    height: 2em;
+    float: right;
+}
+
+.board-columns {
+    width: 100%;
+}
+
+.new-board-button-container {
+    text-align: center;
+    margin-bottom: 2em;
+}
+
+#new_board_btn {
+    padding: 14px;
+    text-align: center;
+    border-radius: 5px;
+    transition: all ease 0.3s;
+    font-weight: bold;
+}
+
+#new_board_btn:hover {
+    cursor: pointer;
+}
+
+.column-add:hover {
+    cursor: pointer;
+}
+
+.board-add:hover {
+    cursor: pointer;
+}
+
+.card:hover {
+    cursor: grab;
+}

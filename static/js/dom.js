@@ -51,6 +51,8 @@ export let dom = {
 
                 dom.updateBoardTitle(e.target.id)})}
 
+
+
         const addCardButtons = document.getElementsByClassName('board-add');
         for (let btn of addCardButtons){
             btn.addEventListener('click', function(){
@@ -105,8 +107,8 @@ export let dom = {
                                 for (let i = 0; i < allStatuses.length; i++) {
                                     let boardColumn = `<div class="board-column" id="board-column`+responseJson[i]['id']+`">
                                 <div class="board-column-title">${allStatuses[i]}</div>
-                                <div class="board-column-content" id="${allStatuses[i]}"></div>
-                                </div>`;
+                                <div class="board-column-content" data-column-container="`+(responseJson.findIndex(p => p.title == allStatuses[i]) + 1) +`" id="${allStatuses[i]}"></div>
+                                </div>`;responseJson[i]['id']
 
                                     boardColumnContainers[board.id - 1].innerHTML += boardColumn;
                                     
@@ -144,10 +146,12 @@ export let dom = {
     },
 
     loadCards: function (boardId) {
-         // retrieves cards and makes showCards called
+
+         // retrieves cards and makes showCards calle
+
         const requestCards = new XMLHttpRequest();
         requestCards.onreadystatechange = function(){
-            if(requestCards.readyState == 4 && requestCards.status == 200){
+            if (requestCards.readyState == 4 && requestCards.status == 200) {
                 let cards = JSON.parse(requestCards.response);
                 dom.showCards(cards, boardId);
             }
@@ -155,6 +159,49 @@ export let dom = {
         requestCards.open('GET', `/get-cards/${boardId}`, true);
         requestCards.send();
 
+
+        let Cardtitles = document.getElementsByClassName("card-title")
+        for (let title of Cardtitles){
+
+
+            title.addEventListener('keypress', function(e){
+                if (e.keyCode === 13) {
+                    e.preventDefault();
+                    dom.updateCardTitle(e.target.id)
+                }
+
+            });
+        }
+
+    },
+
+    test: function(id){
+    },
+
+    updateCardTitle: function (CardId){
+            let cardTitle = CardId;
+            console.log("wwwwwwwwwwwwwwwwwwwwwwwwwwwadsasacasc",cardTitle)
+            let titleValue = document.getElementById(cardTitle);
+            let data = {
+                'id': CardId,
+                'title': titleValue.innerHTML,
+             }
+
+            let settings = {
+                'method': 'POST',
+                'headers': {
+                'Content-Type' : 'application/json',
+                'Accept' : 'application/json'
+            },
+            body: JSON.stringify(data),
+            }
+
+        fetch('/update-card',settings)
+            .then((serverResponse)=>{
+                return serverResponse.json();
+            })
+            .then((jsonResponse)=>{
+            })
     },
 
     updateBoardTitle: function (boardId){
@@ -178,13 +225,14 @@ export let dom = {
             .then((serverResponse)=>{
                 return serverResponse.json();
             })
-            .then((jsonResponse)=>{
+            .then((jsonResponse) => {
                 console.log(jsonResponse);
             })
     },
 
     showCards: function (cards, boardId) {
         const boardColumns = document.getElementsByClassName('board-columns')[boardId - 1]
+
 
         for(let boardCol of boardColumns.childNodes){
             try{
@@ -193,10 +241,12 @@ export let dom = {
             catch{
                 continue;
             }
-            for(let card of cards){
-                if(colContentId == card['status_id']){
+            for (let card of cards) {
+                if (colContentId == card['status_id']) {
                     let cardElement = document.createElement('div');
                     cardElement.setAttribute('class', 'card');
+                    cardElement.setAttribute('data-status', "");
+                    cardElement.setAttribute("id", 'card-id-for-status-' + card['id']);
                     let cardRemove = document.createElement('div');
                     cardRemove.setAttribute('class', 'card-remove');
                     let i = document.createElement('i');
@@ -205,20 +255,21 @@ export let dom = {
                     cardElement.appendChild(cardRemove);
                     let cardTitle = document.createElement('div');
                     cardTitle.setAttribute('class', 'card-title');
+                    cardTitle.setAttribute('id', 'card-id-' + card['id']);
+                    cardTitle.setAttribute('contenteditable', true);
                     cardTitle.textContent = card['title'];
                     cardElement.appendChild(cardTitle);
-                    console.log(cardElement)
                     boardCol.childNodes[3].appendChild(cardElement);
-                    console.log(boardCol)
+
                 }
             }
         }
+        dom.moveCards();
         // shows the cards of a board
         // it adds necessary event listeners also
     },
 
     addCard: function(btnPressed){
-        console.log(btnPressed)
         const boardId = btnPressed.id.replace('add-card-btn-', '')
         const hiddenInput = document.getElementById('card-boardId')
         hiddenInput.value = boardId
@@ -397,6 +448,31 @@ export let dom = {
             })
         })
     },
+
+    moveCards: function () {
+        let containers = document.querySelectorAll(".board-column-content");
+        let containersArray = Array.from(containers);
+        dragula(containersArray)
+            .on('drop', function (el) {
+                el.dataset.columnContainer = el.parentNode.dataset.columnContainer;
+                let data4 = {
+                    card_id: el.id,
+                    card_status: el.dataset.columnContainer,
+                };
+                let settings = {
+                    'method': 'POST',
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    "body": JSON.stringify(data4),
+                }
+                fetch("/update-card-status", settings)
+                    .then((serverResponse) => {
+                        return serverResponse.json();
+                });
+            })
+    }
 
     // here comes more features
 };
