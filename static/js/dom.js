@@ -45,11 +45,13 @@ export let dom = {
         }
 
         
-        let titles = document.getElementsByClassName("board-title")
+        let titles = document.querySelectorAll(".board-title")
         for (let title of titles){
             title.addEventListener('blur', function(e){
 
-                dom.updateBoardTitle(e.target.id)})}
+                dom.updateBoardTitle(e.target.id)
+            })
+        }
 
 
 
@@ -160,18 +162,17 @@ export let dom = {
         requestCards.send();
 
 
-        let Cardtitles = document.getElementsByClassName("card-title")
-        for (let title of Cardtitles){
-
-
-            title.addEventListener('keypress', function(e){
-                if (e.keyCode === 13) {
-                    e.preventDefault();
-                    dom.updateCardTitle(e.target.id)
-                }
-
-            });
-        }
+        // let cardtitles = document.getElementsByClassName("card-title")
+        // for (let title of cardtitles){
+        //     title.addEventListener('keypress', function(e){
+        //         if (e.keyCode === 13) {
+        //             e.preventDefault();
+        //             // dom.updateCardTitle(e.target.id)
+        //
+        //         }
+        //
+        //     });
+        // }
 
     },
 
@@ -258,6 +259,15 @@ export let dom = {
                     cardTitle.setAttribute('id', 'card-id-' + card['id']);
                     cardTitle.setAttribute('contenteditable', true);
                     cardTitle.textContent = card['title'];
+                    cardTitle.addEventListener('keypress', function(e){
+                        if (e.keyCode === 13) {
+                                e.preventDefault();
+                                dom.updateCardTitle(this.id)
+
+                        }
+
+                     });
+
                     cardElement.appendChild(cardTitle);
                     boardCol.childNodes[3].appendChild(cardElement);
 
