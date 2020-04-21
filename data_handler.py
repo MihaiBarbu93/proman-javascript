@@ -11,12 +11,12 @@ def get_card_status(status_id):
     return next((status['title'] for status in statuses if status['id'] == status_id), 'Unknown')
 
 
-def get_boards():
+def get_boards(user_id):
     """
     Gather all boards
     :return:
     """
-    return persistence.get_boards()
+    return persistence.get_boards(user_id)
 
 
 def get_cards_for_board(board_id):
@@ -34,6 +34,14 @@ def _insert_board(cursor, title):
     cursor.execute(f'''
                     INSERT INTO boards VALUES  (default,'{title}');
                     ''')
+
+
+@connection.connection_handler
+def _insert_private_board(cursor, title, user_id):
+    cursor.execute(f'''
+                    INSERT INTO boards VALUES  (default,'{title}', {user_id});
+                    ''')
+
 
 
 @connection.connection_handler
@@ -59,6 +67,8 @@ def _insert_column(cursor, title, board_id):
 def _insert_card(cursor, card_title, card_status, card_priority, board_id):
     query = f""" INSERT INTO cards VALUES (DEFAULT, {int(board_id)}, '{card_title}', {int(card_status)}, {int(card_priority)}); """
     cursor.execute(query)
+
+
 
 @connection.connection_handler
 def insert_user(cursor, name, password):
@@ -104,6 +114,15 @@ def confirm_user(cursor, usrname):
         return True
     else:
         return False
+
+@connection.connection_handler
+def get_user_id(cursor,username):
+    cursor.execute(f"""
+                    SELECT id FROM users
+                    WHERE username='{username}'
+                    """)
+    result = cursor.fetchone()
+    return result
 
 
 @connection.connection_handler

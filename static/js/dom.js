@@ -99,10 +99,10 @@ export let dom = {
                             }
                         }
 
-           
+
                         for (let board of boards) {
                             if (board.id == boardId) {
-                                
+
                                 boardColumnContainers[board.id - 1].innerHTML = "";
                                 for (let i = 0; i < allStatuses.length; i++) {
                                     let boardColumn = `<div class="board-column" id="board-column`+responseJson[i]['id']+`">
@@ -232,7 +232,7 @@ export let dom = {
 
     showCards: function (cards, boardId) {
         const boardColumns = document.getElementsByClassName('board-columns')[boardId - 1]
-
+        console.log(boardColumns)
 
         for(let boardCol of boardColumns.childNodes){
             try{
@@ -299,6 +299,22 @@ export let dom = {
         close_btn.addEventListener("click",function (event) {
             modal.style.display = "none";
         })
+    },
+
+    addPrivateBoardModal: function () {
+        let addButton=document.getElementById('new_private_board_btn')
+        let modal = document.getElementById("PrivateModal")
+        let close_btn= document.getElementById("close_modal")
+        if (addButton != null){
+            addButton.addEventListener('click',function (event) {
+                modal.style.display = "block";
+            })
+        }
+        if (addButton != null){
+            close_btn.addEventListener("click",function (event) {
+                modal.style.display = "none";
+            })
+        }
     },
     sendColumnInfo: function (col_id,title){
 

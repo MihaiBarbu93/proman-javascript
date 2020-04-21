@@ -41,7 +41,12 @@ def get_boards():
     """
     All the boards
     """
-    return data_handler.get_boards()
+    user_id = None
+    if 'username' in session:
+        user_id = data_handler.get_user_id(session['username'])
+        print(data_handler.get_boards(user_id['id']))
+        return data_handler.get_boards(user_id['id'])
+    return data_handler.get_boards(user_id)
 
 
 @app.route("/get-cards/<int:board_id>")
@@ -60,6 +65,17 @@ def add_board():
         title=request.form['board_title']
         data_handler._insert_board(title)
         return redirect(url_for('index'))
+
+
+
+@app.route('/add-private-board', methods=['GET','POST'])
+def add_private_board():
+    if request.method == 'POST':
+        title = request.form['private_board_title']
+        user_id = data_handler.get_user_id(session['username'])
+        data_handler._insert_private_board(title, user_id['id'])
+        return redirect(url_for('index'))
+
 
 @app.route('/add-column', methods=['GET', 'POST'])
 def add_column():
@@ -85,6 +101,7 @@ def add_card():
 def get_all_statuses():
     all_statuses = persistence.get_statuses()
     all_statuses_json = json.dumps(all_statuses)
+    print(all_statuses_json)
     return all_statuses_json
 
 @app.route("/register", methods=['POST'])
