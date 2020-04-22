@@ -9,6 +9,7 @@ def _read_table(cursor,table_name):
     """
     cursor.execute(f'''
                     SELECT * FROM {table_name}
+                    ORDER BY id ASC
                     ''')
     result = cursor.fetchall()
     return result
