@@ -69,9 +69,6 @@ export let dom = {
                     var boardId = parseInt(e.target.parentNode.id);
                     var section = document.getElementById(`board${boardId}`)
                     var boardColumn = section.children[1].children[0]
-                    console.log('aaaaaaaaaaaaaa', boardColumn)
-                    // var boardColumn = e.target.parentNode
-
                 }else{
                     var boardId = parseInt(e.target.id);
                 }
@@ -155,33 +152,34 @@ export let dom = {
     },
 
     updateCardTitle: function (CardId){
-            let cardTitle = CardId;
-            console.log("wwwwwwwwwwwwwwwwwwwwwwwwwwwadsasacasc",cardTitle)
-            let titleValue = document.getElementById(cardTitle);
-            let data = {
-                'id': CardId,
-                'title': titleValue.innerHTML,
-             }
+        let cardTitle = CardId;
+        console.log("wwwwwwwwwwwwwwwwwwwwwwwwwwwadsasacasc",cardTitle)
+        let titleValue = document.getElementById(cardTitle);
+        let data = {
+            'id': CardId,
+            'title': titleValue.innerHTML,
+         }
 
-            let settings = {
-                'method': 'POST',
-                'headers': {
-                'Content-Type' : 'application/json',
-                'Accept' : 'application/json'
-            },
-            body: JSON.stringify(data),
-            }
+        let settings = {
+            'method': 'POST',
+            'headers': {
+            'Content-Type' : 'application/json',
+            'Accept' : 'application/json'
+        },
+        body: JSON.stringify(data),
+        }
 
-        fetch('/update-card',settings)
-            .then((serverResponse)=>{
-                return serverResponse.json();
-            })
-            .then((jsonResponse)=>{
-            })
+    fetch('/update-card',settings)
+        .then((serverResponse)=>{
+            return serverResponse.json();
+        })
+        .then((jsonResponse)=>{
+        })
     },
 
     updateBoardTitle: function (boardId){
             let boardTitle = boardId;
+            boardId = boardId.slice(8)
             let titleValue = document.getElementById(boardTitle);
             let data = {
                 'id': boardId,
@@ -206,8 +204,31 @@ export let dom = {
             })
     },
 
+    removeCard: function (cardId){
+        let data = {
+            'id': cardId,
+         };
+
+        let settings = {
+            'method': 'POST',
+            'headers': {
+            'Content-Type' : 'application/json',
+            'Accept' : 'application/json'
+        },
+            body: JSON.stringify(data),
+        };
+
+        fetch('/remove-card',settings)
+            .then((serverResponse)=>{
+                return serverResponse.json();
+            })
+            .then((jsonResponse) => {
+                console.log(jsonResponse);
+            })
+    },
+
     showCards: function (cards, boardColumn) {
-        const boardCol = boardColumn
+        const boardCol = boardColumn;
         for (let col of Array.from(boardCol.children)) {
             let colContentId = parseInt(col.id.replace("board-column",""))
             for (let card of cards) {
@@ -218,9 +239,14 @@ export let dom = {
                     cardElement.setAttribute("id", 'card-id-for-status-' + card['id']);
                     let cardRemove = document.createElement('div');
                     cardRemove.setAttribute('class', 'card-remove');
+                    cardRemove.setAttribute('id', 'delete-id-'+ card['id'])
                     let i = document.createElement('i');
                     i.setAttribute('class', 'fas fa-trash-alt');
                     cardRemove.appendChild(i);
+                    cardRemove.addEventListener('click', function (e) {
+                        dom.removeCard(this.id.slice(10));
+                        this.parentNode.remove();
+                    })
                     cardElement.appendChild(cardRemove);
                     let cardTitle = document.createElement('div');
                     cardTitle.setAttribute('class', 'card-title');
