@@ -280,17 +280,23 @@ export let dom = {
                     come_back_button.setAttribute("id",`come_back-${jsonResponse[i]['id']}`)
                     come_back_button.textContent="Come back!"
                     come_back_button_td.appendChild(come_back_button)
-                    come_back_button.addEventListener("click", function (event) {
-                        come_back_button.parentNode.parentNode.remove()
+                    come_back_button.addEventListener("click", function () {
                         dom.sendArchiveCardId(jsonResponse[i]['id'])
+                        come_back_button.parentNode.parentNode.remove()
+
 
                     })
+                    let modal = document.getElementById("archive_modal");
+                    let close_archive_btn = document.getElementById('close_archive_modal')
+                    close_archive_btn.addEventListener("click", function (event) {
+                        modal.classList.remove('show');
+                    });
                 }
             })
     },
 
     sendArchiveCardId: function(id){
-        let data={"id":id.slice(10)
+        let data={"id":id
 
         }
         let settings={
@@ -307,29 +313,6 @@ export let dom = {
                 return serverResponse.json();
             })
             .then((jsonResponse)=>{
-                console.log(jsonResponse);
-            })
-    },
-
-    removeCard: function (cardId){
-        let data = {
-            'id': cardId,
-         };
-
-        let settings = {
-            'method': 'POST',
-            'headers': {
-            'Content-Type' : 'application/json',
-            'Accept' : 'application/json'
-        },
-            body: JSON.stringify(data),
-        };
-
-        fetch('/remove-card',settings)
-            .then((serverResponse)=>{
-                return serverResponse.json();
-            })
-            .then((jsonResponse) => {
                 console.log(jsonResponse);
             })
     },

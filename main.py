@@ -46,7 +46,7 @@ def remove_board():
 
 @app.route('/archive-card',methods=["GET"])
 def archive_card():
-    board_id=request.args.get("board_id")
+    board_id = request.args.get("board_id")
     return jsonify(data_handler.get_archived_cards(board_id))
 
 
