@@ -22,8 +22,15 @@ def index():
 @app.route('/update-board', methods=["POST"])
 def update_board():
     request_content = request.json
-    data = {'id': request_content['id'][-1], 'title': request_content['title']}
+    data = {'id': request_content['id'], 'title': request_content['title']}
     data_handler.update_board(data)
+    return jsonify({'success': True})
+
+@app.route('/remove-card', methods=["POST"])
+def remove_card():
+    request_content = request.json
+    data = {'id': request_content['id']}
+    data_handler.delete_card(data['id'])
     return jsonify({'success': True})
 
 @app.route('/update-card', methods=["POST"])
