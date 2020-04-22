@@ -17,9 +17,7 @@ export let dom = {
         // shows boards appending them to #boards div
         // it adds necessary event listeners also
 
-
         let boardsContainer = document.querySelector('.board-container');
-
 
         for (let board of boards) {
             let boardLi =
@@ -44,7 +42,6 @@ export let dom = {
             
         }
 
-        
         let titles = document.querySelectorAll(".board-title")
         for (let title of titles){
             title.addEventListener('blur', function(e){
@@ -52,8 +49,6 @@ export let dom = {
                 dom.updateBoardTitle(e.target.id)
             })
         }
-
-
 
         const addCardButtons = document.getElementsByClassName('board-add');
         for (let btn of addCardButtons){
@@ -65,24 +60,21 @@ export let dom = {
 
     showColumns : function (boards) {
 
-
-        let boardColumnContainers = document.querySelectorAll('.board-columns');
-
-
         let expand_buttons = document.getElementsByClassName("board-toggle")
-    
         
         for (let expand_button of expand_buttons) {
-            expand_button.addEventListener('click', async function (e) {
-            
+            expand_button.addEventListener('click', function (e) {
+
                 if(e.target.className == 'fas fa-chevron-down'){
                     var boardId = parseInt(e.target.parentNode.id);
+                    var section = document.getElementById(`board${boardId}`)
+                    var boardColumn = section.children[1].children[0]
+                    console.log('aaaaaaaaaaaaaa', boardColumn)
+                    // var boardColumn = e.target.parentNode
+
                 }else{
                     var boardId = parseInt(e.target.id);
                 }
-
-                dom.loadCards(boardId)
-
 
                 let allStatuses = []
                 fetch('/get-statuses')
@@ -100,27 +92,26 @@ export let dom = {
                                 }
                             }
                         }
-
-
                         for (let board of boards) {
                             if (board.id == boardId) {
 
-                                boardColumnContainers[board.id - 1].innerHTML = "";
+                                boardColumn.innerHTML = "";
                                 for (let i = 0; i < allStatuses.length; i++) {
-                                    let boardColumn = `<div class="board-column" id="board-column`+responseJson[i]['id']+`">
+                                    let boardColumnContent = `<div class="board-column" id="board-column`+responseJson[i]['id']+`">
                                 <div class="board-column-title">${allStatuses[i]}</div>
                                 <div class="board-column-content" data-column-container="`+(responseJson.findIndex(p => p.title == allStatuses[i]) + 1) +`" id="${allStatuses[i]}"></div>
                                 </div>`;responseJson[i]['id']
 
-                                    boardColumnContainers[board.id - 1].innerHTML += boardColumn;
+                                    boardColumn.innerHTML += boardColumnContent;
                                     
                                 }
                                 let addColumnButton = `<button id="board_col_id_`+board.id+`" class="column-add" data-board-id="`+board.id+`">Add Column</button>`;
-                                boardColumnContainers[board.id - 1].innerHTML += addColumnButton;
+                                boardColumn.innerHTML += addColumnButton;
                                 dom.addColumn()
                             }
                         }
                     })
+                dom.loadCards(boardId, boardColumn)
             })
         }
     },
@@ -144,36 +135,20 @@ export let dom = {
                 });     
             })
         }
-
     },
 
-    loadCards: function (boardId) {
+    loadCards: function (boardId, boardColumn) {
 
          // retrieves cards and makes showCards calle
-
         const requestCards = new XMLHttpRequest();
         requestCards.onreadystatechange = function(){
             if (requestCards.readyState == 4 && requestCards.status == 200) {
                 let cards = JSON.parse(requestCards.response);
-                dom.showCards(cards, boardId);
+                dom.showCards(cards, boardColumn);
             }
         }
         requestCards.open('GET', `/get-cards/${boardId}`, true);
         requestCards.send();
-
-
-        // let cardtitles = document.getElementsByClassName("card-title")
-        // for (let title of cardtitles){
-        //     title.addEventListener('keypress', function(e){
-        //         if (e.keyCode === 13) {
-        //             e.preventDefault();
-        //             // dom.updateCardTitle(e.target.id)
-        //
-        //         }
-        //
-        //     });
-        // }
-
     },
 
     test: function(id){
@@ -231,19 +206,12 @@ export let dom = {
             })
     },
 
-    showCards: function (cards, boardId) {
-        const boardColumns = document.getElementsByClassName('board-columns')[boardId - 1]
-        console.log(boardColumns)
-
-        for(let boardCol of boardColumns.childNodes){
-            try{
-                var colContentId = boardCol.childNodes[3].id;
-            }
-            catch{
-                continue;
-            }
+    showCards: function (cards, boardColumn) {
+        const boardCol = boardColumn
+        for (let col of Array.from(boardCol.children)) {
+            let colContentId = parseInt(col.id.replace("board-column",""))
             for (let card of cards) {
-                if (colContentId == card['status_id']) {
+                if (colContentId == parseInt(card['status_id'])) {
                     let cardElement = document.createElement('div');
                     cardElement.setAttribute('class', 'card');
                     cardElement.setAttribute('data-status', "");
@@ -259,17 +227,17 @@ export let dom = {
                     cardTitle.setAttribute('id', 'card-id-' + card['id']);
                     cardTitle.setAttribute('contenteditable', true);
                     cardTitle.textContent = card['title'];
-                    cardTitle.addEventListener('keypress', function(e){
+                    cardTitle.addEventListener('keypress', function (e) {
                         if (e.keyCode === 13) {
-                                e.preventDefault();
-                                dom.updateCardTitle(this.id)
+                            e.preventDefault();
+                            dom.updateCardTitle(this.id)
 
                         }
 
-                     });
+                    });
 
                     cardElement.appendChild(cardTitle);
-                    boardCol.childNodes[3].appendChild(cardElement);
+                    col.childNodes[3].appendChild(cardElement);
 
                 }
             }
