@@ -7,6 +7,7 @@ DROP TABLE users;
 CREATE TABLE boards(
         id serial not null ,
         title varchar(20) NOT NULL UNIQUE,
+        user_id integer,
         PRIMARY KEY (id)
 );
 
