@@ -17,9 +17,7 @@ export let dom = {
         // shows boards appending them to #boards div
         // it adds necessary event listeners also
 
-
         let boardsContainer = document.querySelector('.board-container');
-
 
         for (let board of boards) {
             let boardLi =
@@ -30,6 +28,7 @@ export let dom = {
               board.id +
               `" contenteditable="true">${board.title}</span>
                         <button class="board-add" id="add-card-btn-${board.id}">Add Card</button>
+                        <button class="archive" id="archive-${board.id}">Archive</button>
                         <button id="${board.id}" class="board-toggle btn btn-link" data-toggle="collapse" data-target="#collapse${board.id}" aria-expanded="false" aria-controls="collapseOne">
                         <i class="fas fa-chevron-down"></i></button>
                     </div>
@@ -43,15 +42,22 @@ export let dom = {
             boardsContainer.innerHTML += boardLi
             
         }
+        let archive_btn=document.querySelectorAll(".archive")
+        for (let btn of archive_btn){
+            btn.addEventListener("click",function (event) {
+                dom.getArchive(this.id)
+                let arc_modal=document.getElementById("archive_modal")
+                arc_modal.style.display="block"
+            })
+        }
 
-        
-        let titles = document.getElementsByClassName("board-title")
+        let titles = document.querySelectorAll(".board-title")
         for (let title of titles){
             title.addEventListener('blur', function(e){
 
-                dom.updateBoardTitle(e.target.id)})}
-
-
+                dom.updateBoardTitle(e.target.id)
+            })
+        }
 
         const addCardButtons = document.getElementsByClassName('board-add');
         for (let btn of addCardButtons){
@@ -63,24 +69,18 @@ export let dom = {
 
     showColumns : function (boards) {
 
-
-        let boardColumnContainers = document.querySelectorAll('.board-columns');
-
-
         let expand_buttons = document.getElementsByClassName("board-toggle")
-    
         
         for (let expand_button of expand_buttons) {
-            expand_button.addEventListener('click', async function (e) {
-            
+            expand_button.addEventListener('click', function (e) {
+
                 if(e.target.className == 'fas fa-chevron-down'){
                     var boardId = parseInt(e.target.parentNode.id);
+                    var section = document.getElementById(`board${boardId}`)
+                    var boardColumn = section.children[1].children[0]
                 }else{
                     var boardId = parseInt(e.target.id);
                 }
-
-                dom.loadCards(boardId)
-
 
                 let allStatuses = []
                 fetch('/get-statuses')
@@ -98,27 +98,26 @@ export let dom = {
                                 }
                             }
                         }
-
-           
                         for (let board of boards) {
                             if (board.id == boardId) {
-                                
-                                boardColumnContainers[board.id - 1].innerHTML = "";
+
+                                boardColumn.innerHTML = "";
                                 for (let i = 0; i < allStatuses.length; i++) {
-                                    let boardColumn = `<div class="board-column" id="board-column`+responseJson[i]['id']+`">
+                                    let boardColumnContent = `<div class="board-column" id="board-column`+responseJson[i]['id']+`">
                                 <div class="board-column-title">${allStatuses[i]}</div>
                                 <div class="board-column-content" data-column-container="`+(responseJson.findIndex(p => p.title == allStatuses[i]) + 1) +`" id="${allStatuses[i]}"></div>
                                 </div>`;responseJson[i]['id']
 
-                                    boardColumnContainers[board.id - 1].innerHTML += boardColumn;
+                                    boardColumn.innerHTML += boardColumnContent;
                                     
                                 }
                                 let addColumnButton = `<button id="board_col_id_`+board.id+`" class="column-add" data-board-id="`+board.id+`">Add Column</button>`;
-                                boardColumnContainers[board.id - 1].innerHTML += addColumnButton;
+                                boardColumn.innerHTML += addColumnButton;
                                 dom.addColumn()
                             }
                         }
                     })
+                dom.loadCards(boardId, boardColumn)
             })
         }
     },
@@ -142,70 +141,54 @@ export let dom = {
                 });     
             })
         }
-
     },
 
-    loadCards: function (boardId) {
+    loadCards: function (boardId, boardColumn) {
 
          // retrieves cards and makes showCards calle
-
         const requestCards = new XMLHttpRequest();
         requestCards.onreadystatechange = function(){
             if (requestCards.readyState == 4 && requestCards.status == 200) {
                 let cards = JSON.parse(requestCards.response);
-                dom.showCards(cards, boardId);
+                dom.showCards(cards, boardColumn);
             }
         }
         requestCards.open('GET', `/get-cards/${boardId}`, true);
         requestCards.send();
-
-
-        let Cardtitles = document.getElementsByClassName("card-title")
-        for (let title of Cardtitles){
-
-
-            title.addEventListener('keypress', function(e){
-                if (e.keyCode === 13) {
-                    e.preventDefault();
-                    dom.updateCardTitle(e.target.id)
-                }
-
-            });
-        }
-
     },
 
     test: function(id){
     },
 
     updateCardTitle: function (CardId){
-            let cardTitle = CardId;
-            console.log("wwwwwwwwwwwwwwwwwwwwwwwwwwwadsasacasc",cardTitle)
-            let titleValue = document.getElementById(cardTitle);
-            let data = {
-                'id': CardId,
-                'title': titleValue.innerHTML,
-             }
+        let cardTitle = CardId;
+        console.log("wwwwwwwwwwwwwwwwwwwwwwwwwwwadsasacasc",cardTitle)
+        let titleValue = document.getElementById(cardTitle);
+        let data = {
+            'id': CardId,
+            'title': titleValue.innerHTML,
+         }
 
-            let settings = {
-                'method': 'POST',
-                'headers': {
-                'Content-Type' : 'application/json',
-                'Accept' : 'application/json'
-            },
-            body: JSON.stringify(data),
-            }
+        let settings = {
+            'method': 'POST',
+            'headers': {
+            'Content-Type' : 'application/json',
+            'Accept' : 'application/json'
+        },
+        body: JSON.stringify(data),
+        }
 
-        fetch('/update-card',settings)
-            .then((serverResponse)=>{
-                return serverResponse.json();
-            })
-            .then((jsonResponse)=>{
-            })
+    fetch('/update-card',settings)
+        .then((serverResponse)=>{
+            return serverResponse.json();
+        })
+        .then((jsonResponse)=>{
+        })
     },
 
     updateBoardTitle: function (boardId){
             let boardTitle = boardId;
+            boardId = boardId.slice(8)
             let titleValue = document.getElementById(boardTitle);
             let data = {
                 'id': boardId,
@@ -230,36 +213,125 @@ export let dom = {
             })
     },
 
-    showCards: function (cards, boardId) {
-        const boardColumns = document.getElementsByClassName('board-columns')[boardId - 1]
+    removeCard: function (cardId){
+        let data = {
+            'id': cardId,
+         };
+
+        let settings = {
+            'method': 'POST',
+            'headers': {
+            'Content-Type' : 'application/json',
+            'Accept' : 'application/json'
+        },
+            body: JSON.stringify(data),
+        };
+
+        fetch('/remove-card',settings)
+            .then((serverResponse)=>{
+                return serverResponse.json();
+            })
+            .then((jsonResponse) => {
+                console.log(jsonResponse);
+            })
+    },
 
 
-        for(let boardCol of boardColumns.childNodes){
-            try{
-                var colContentId = boardCol.childNodes[3].id;
-            }
-            catch{
-                continue;
-            }
+    getArchive: function (boardID){
+        fetch(`/archive-card?board_id=${boardID.slice(8)}`)
+            .then((serverResponse)=>{
+                return serverResponse.json();
+            })
+            .then((jsonResponse) => {
+                console.log(jsonResponse);
+                let table_body=document.getElementById("tbod2")
+                table_body.innerHTML=""
+                for (let i=0; i<jsonResponse.length;i++){
+                    let row=table_body.insertRow()
+                    let id=row.insertCell(0)
+                    let title=row.insertCell(1)
+                    let board=row.insertCell(2)
+                    let status_id=row.insertCell(3)
+                    let priority=row.insertCell(4)
+                    let come_back_button_td=row.insertCell(5)
+                    id.innerHTML=jsonResponse[i]['id']
+                    title.innerHTML=jsonResponse[i]['title']
+                    board.innerHTML=jsonResponse[i]['board_id']
+                    status_id.innerHTML=jsonResponse[i]['status_id']
+                    priority.innerHTML=jsonResponse[i]['order_priority']
+                    let come_back_button=document.createElement("button")
+                    come_back_button.setAttribute("id",`come_back-${jsonResponse[i]['id']}`)
+                    come_back_button.textContent="Come back!"
+                    come_back_button_td.appendChild(come_back_button)
+                    come_back_button.addEventListener("click", function (event) {
+                        come_back_button.parentNode.parentNode.remove()
+                        dom.sendArchiveCardId(jsonResponse[i]['id'])
+
+                    })
+                }
+            })
+    },
+
+    sendArchiveCardId: function(id){
+        let data={"id":id.slice(10)
+
+        }
+        let settings={
+            'method': 'POST',
+                'headers': {
+                'Content-Type' : 'application/json',
+                'Accept' : 'application/json'
+            },
+            body: JSON.stringify(data),
+
+        }
+        fetch('/retrive-card',settings)
+            .then((serverResponse)=>{
+                return serverResponse.json();
+            })
+            .then((jsonResponse)=>{
+                console.log(jsonResponse);
+            })
+
+    },
+
+    showCards: function (cards, boardColumn) {
+        const boardCol = boardColumn;
+        for (let col of Array.from(boardCol.children)) {
+            let colContentId = parseInt(col.id.replace("board-column",""))
             for (let card of cards) {
-                if (colContentId == card['status_id']) {
+                if (colContentId == parseInt(card['status_id'])) {
                     let cardElement = document.createElement('div');
                     cardElement.setAttribute('class', 'card');
                     cardElement.setAttribute('data-status', "");
                     cardElement.setAttribute("id", 'card-id-for-status-' + card['id']);
                     let cardRemove = document.createElement('div');
                     cardRemove.setAttribute('class', 'card-remove');
+                    cardRemove.setAttribute('id', 'delete-id-'+ card['id'])
                     let i = document.createElement('i');
                     i.setAttribute('class', 'fas fa-trash-alt');
                     cardRemove.appendChild(i);
+                    cardRemove.addEventListener('click', function (e) {
+                        dom.removeCard(this.id.slice(10));
+                        this.parentNode.remove();
+                    })
                     cardElement.appendChild(cardRemove);
                     let cardTitle = document.createElement('div');
                     cardTitle.setAttribute('class', 'card-title');
                     cardTitle.setAttribute('id', 'card-id-' + card['id']);
                     cardTitle.setAttribute('contenteditable', true);
                     cardTitle.textContent = card['title'];
+                    cardTitle.addEventListener('keypress', function (e) {
+                        if (e.keyCode === 13) {
+                            e.preventDefault();
+                            dom.updateCardTitle(this.id)
+
+                        }
+
+                    });
+
                     cardElement.appendChild(cardTitle);
-                    boardCol.childNodes[3].appendChild(cardElement);
+                    col.childNodes[3].appendChild(cardElement);
 
                 }
             }
@@ -299,6 +371,22 @@ export let dom = {
         close_btn.addEventListener("click",function (event) {
             modal.style.display = "none";
         })
+    },
+
+    addPrivateBoardModal: function () {
+        let addButton=document.getElementById('new_private_board_btn')
+        let modal = document.getElementById("PrivateModal")
+        let close_btn= document.getElementById("close_modal")
+        if (addButton != null){
+            addButton.addEventListener('click',function (event) {
+                modal.style.display = "block";
+            })
+        }
+        if (addButton != null){
+            close_btn.addEventListener("click",function (event) {
+                modal.style.display = "none";
+            })
+        }
     },
     sendColumnInfo: function (col_id,title){
 

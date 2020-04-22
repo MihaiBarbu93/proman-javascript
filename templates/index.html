@@ -58,8 +58,9 @@
         <h1>ProMan</h1>
 
         <div class="new-board-button-container"><button id="new_board_btn" data-toogle="modal" data-target="#myModal">New Board</button></div>
-
-
+        {% if 'username' in session %}
+             <div class="new-board-button-container"><button id="new_private_board_btn" data-toogle="modal" data-target="#PrivateModal">New Private Board</button></div>
+        {% endif %}
         <div class="board-container">
 
 
@@ -79,6 +80,27 @@
                       <label for="titleField">Title:</label><br>
                       <input id="titleField" type="text" placeholder="Title..." name="board_title">
                       <input id="submit_board" type="submit" value="Submit">
+                  </form>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+     <!-- ADD PRIVATE BOARD MODAL-->
+        <div class="modal" id="PrivateModal" role="dialog">
+          <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button id="close_modal" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+              <div class="modal-body">
+                  <form method="POST" id="privateBoardModalForm" action="/add-private-board">
+                      <label for="privateTitleField">Title:</label><br>
+                      <input id="privateTitleField" type="text" placeholder="Title..." name="private_board_title">
+                      <input id="submit_private_board" type="submit" value="Submit">
                   </form>
               </div>
             </div>
@@ -203,6 +225,28 @@
     </div>
   </div>
 </div>
+    <!--ARCHIVE MODAL-->
+    <div class="modal fade show archive" style="display: none;padding: 50px" id="archive_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog " role="document">
+    <div class="modal-content"style="width: auto";>
+        <table id="myTable3" class="table table-bordered">
+          <thead class="thead-dark" id="head2">
+    <tr>
+        <th scope="col">ID</th>
+        <th scope="col">TITLE</th>
+        <th scope="col">BOARD ID</th>
+        <th scope="col">STATUS ID</th>
+        <th scope="col">ORDER PRIORITY</th>
+        <th scope="col">ARCHIVE</th>
+    </tr>
+  </thead>
+          <tbody id="tbod2">
 
+          </tbody>
+        </table>
+      </div>
+        </div>
+    </div>
     </body>
 </html>

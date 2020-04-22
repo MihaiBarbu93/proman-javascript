@@ -11,12 +11,12 @@ def get_card_status(status_id):
     return next((status['title'] for status in statuses if status['id'] == status_id), 'Unknown')
 
 
-def get_boards():
+def get_boards(user_id):
     """
     Gather all boards
     :return:
     """
-    return persistence.get_boards()
+    return persistence.get_boards(user_id)
 
 
 def get_cards_for_board(board_id):
@@ -24,7 +24,7 @@ def get_cards_for_board(board_id):
     matching_cards = []
     for card in all_cards:
         if card['board_id'] == board_id:
-            card['status_id'] = get_card_status(card['status_id'])  # Set textual status for the card
+            # card['status_id'] = get_card_status(card['status_id'])  # Set textual status for the card
             matching_cards.append(card)
     return matching_cards
 
@@ -37,10 +37,24 @@ def _insert_board(cursor, title):
 
 
 @connection.connection_handler
+def _insert_private_board(cursor, title, user_id):
+    cursor.execute(f'''
+                    INSERT INTO boards VALUES  (default,'{title}', {user_id});
+                    ''')
+
+
+
+@connection.connection_handler
 def update_board(cursor, data):
     cursor.execute(f"""
         UPDATE boards SET title = '{data["title"]}' WHERE id = {data["id"]};
     """)
+
+@connection.connection_handler
+def delete_card(cursor, id):
+    cursor.execute(f"""
+                    DELETE FROM cards WHERE id={id};
+                    """)
 
 @connection.connection_handler
 def update_card(cursor, data):
@@ -59,6 +73,42 @@ def _insert_column(cursor, title, board_id):
 def _insert_card(cursor, card_title, card_status, card_priority, board_id):
     query = f""" INSERT INTO cards VALUES (DEFAULT, {int(board_id)}, '{card_title}', {int(card_status)}, {int(card_priority)}); """
     cursor.execute(query)
+
+
+@connection.connection_handler
+def archive_card(cursor, id):
+    cursor.execute(f'''
+                    INSERT INTO archive
+                    SELECT id,board_id,title, status_id,order_priority
+                    FROM cards
+                    WHERE cards.id={id};
+                    ''')
+
+
+@connection.connection_handler
+def revived_card(cursor, id):
+    cursor.execute(f'''
+                    INSERT INTO cards
+                    SELECT id,board_id,title, status_id,order_priority
+                    FROM archive
+                    WHERE archive.id={id};
+                    ''')
+
+@connection.connection_handler
+def remove_from_archive(cursor,id):
+    cursor.execute(f'''
+                    DELETE FROM archive WHERE id={id};
+                    ''')
+
+@connection.connection_handler
+def get_archived_cards(cursor,board_id):
+    cursor.execute(f'''
+                    SELECT * FROM archive WHERE board_id={board_id}
+                    ''')
+    result=cursor.fetchall()
+    return result
+
+
 
 @connection.connection_handler
 def insert_user(cursor, name, password):
@@ -104,6 +154,15 @@ def confirm_user(cursor, usrname):
         return True
     else:
         return False
+
+@connection.connection_handler
+def get_user_id(cursor,username):
+    cursor.execute(f"""
+                    SELECT id FROM users
+                    WHERE username='{username}'
+                    """)
+    result = cursor.fetchone()
+    return result
 
 
 @connection.connection_handler

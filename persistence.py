@@ -9,7 +9,7 @@ def _read_table(cursor,table_name):
     """
     cursor.execute(f'''
                     SELECT * FROM {table_name}
-                    ORDER BY id ASC
+
                     ''')
     result = cursor.fetchall()
     return result
@@ -34,10 +34,16 @@ def _read_table(cursor,table_name):
 def get_statuses():
     return _read_table('statuses')
 
+@connection.connection_handler
+def get_boards(cursor, user_id=None):
+    if user_id == None:
+        user_id ='null'
+    cursor.execute(f'''
+                        SELECT * FROM boards WHERE user_id IS NULL OR user_id={user_id} ORDER BY id
 
-def get_boards():
-    return _read_table('boards')
-
+                        ''')
+    result = cursor.fetchall()
+    return result
 
 def get_cards():
     return _read_table('cards')
