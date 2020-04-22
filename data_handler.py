@@ -67,6 +67,12 @@ def delete_card(cursor, id):
 
 
 @connection.connection_handler
+def delete_card(cursor, id):
+    cursor.execute(f"""
+                    DELETE FROM cards WHERE id={id};
+                    """)
+
+@connection.connection_handler
 def update_card(cursor, data):
     cursor.execute(f"""
         UPDATE cards SET title = '{data["title"]}' WHERE id = {data["id"]};
@@ -84,6 +90,41 @@ def _insert_column(cursor, title, board_id):
 def _insert_card(cursor, card_title, card_status, card_priority, board_id):
     query = f""" INSERT INTO cards VALUES (DEFAULT, {int(board_id)}, '{card_title}', {int(card_status)}, {int(card_priority)}); """
     cursor.execute(query)
+
+
+@connection.connection_handler
+def archive_card(cursor, id):
+    cursor.execute(f'''
+                    INSERT INTO archive
+                    SELECT id,board_id,title, status_id,order_priority
+                    FROM cards
+                    WHERE cards.id={id};
+                    ''')
+
+
+@connection.connection_handler
+def revived_card(cursor, id):
+    cursor.execute(f'''
+                    INSERT INTO cards
+                    SELECT id,board_id,title, status_id,order_priority
+                    FROM archive
+                    WHERE archive.id={id};
+                    ''')
+
+@connection.connection_handler
+def remove_from_archive(cursor,id):
+    cursor.execute(f'''
+                    DELETE FROM archive WHERE id={id};
+                    ''')
+
+@connection.connection_handler
+def get_archived_cards(cursor,board_id):
+    cursor.execute(f'''
+                    SELECT * FROM archive WHERE board_id={board_id}
+                    ''')
+    result=cursor.fetchall()
+    return result
+
 
 
 @connection.connection_handler
@@ -133,6 +174,15 @@ def confirm_user(cursor, usrname):
         return True
     else:
         return False
+
+@connection.connection_handler
+def get_user_id(cursor,username):
+    cursor.execute(f"""
+                    SELECT id FROM users
+                    WHERE username='{username}'
+                    """)
+    result = cursor.fetchone()
+    return result
 
 
 @connection.connection_handler

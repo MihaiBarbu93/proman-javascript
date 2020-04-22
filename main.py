@@ -27,11 +27,11 @@ def update_board():
     data_handler.update_board(data)
     return jsonify({'success': True})
 
-
 @app.route('/remove-card', methods=["POST"])
 def remove_card():
     request_content = request.json
     data = {'id': request_content['id']}
+    data_handler.archive_card(data['id'])
     data_handler.delete_card(data['id'])
     return jsonify({'success': True})
 
@@ -42,6 +42,23 @@ def remove_board():
     board_id = int(request_content['id'])
     data_handler.delete_board(board_id)
     return jsonify({'success': True})
+
+
+@app.route('/archive-card',methods=["GET"])
+def archive_card():
+    board_id=request.args.get("board_id")
+    return jsonify(data_handler.get_archived_cards(board_id))
+
+
+@app.route('/retrive-card',methods=["POST"])
+def retrive_card():
+    card_id=request.get_json()
+    print(card_id)
+    data_handler.revived_card(card_id['id'])
+    data_handler.remove_from_archive(card_id['id'])
+    return jsonify({'success': True})
+
+
 
 
 @app.route('/update-card', methods=["POST"])
@@ -61,6 +78,7 @@ def get_boards():
     user_id = None
     if 'username' in session:
         user_id = data_handler.get_user_id(session['username'])
+
         return data_handler.get_boards(user_id['id'])
     return data_handler.get_boards(user_id)
 

@@ -31,6 +31,7 @@ export let dom = {
               `" contenteditable="true">${board.title}</span>
                         <button class="board-add" id="add-card-btn-${board.id}">Add Card</button>
                         <button class="board-delete" id="delete-board-btn-${board.id}">Delete Board</button>
+                        <button class="archive" id="archive-${board.id}">Archive</button>
                         <button id="${board.id}" class="board-toggle btn btn-link" data-toggle="collapse" data-target="#collapse${board.id}" aria-expanded="false" aria-controls="collapseOne">
                         <i class="fas fa-chevron-down"></i></button>
                     </div>
@@ -45,6 +46,14 @@ export let dom = {
 
             
             
+        }
+        let archive_btn=document.querySelectorAll(".archive")
+        for (let btn of archive_btn){
+            btn.addEventListener("click",function (event) {
+                dom.getArchive(this.id)
+                let arc_modal=document.getElementById("archive_modal")
+                arc_modal.style.display="block"
+            })
         }
 
         let titles = document.querySelectorAll(".board-title")
@@ -217,6 +226,87 @@ export let dom = {
                 return serverResponse.json();
             })
             .then((jsonResponse) => {
+                console.log(jsonResponse);
+            })
+    },
+
+    removeCard: function (cardId){
+        let data = {
+            'id': cardId,
+         };
+
+        let settings = {
+            'method': 'POST',
+            'headers': {
+            'Content-Type' : 'application/json',
+            'Accept' : 'application/json'
+        },
+            body: JSON.stringify(data),
+        };
+
+        fetch('/remove-card',settings)
+            .then((serverResponse)=>{
+                return serverResponse.json();
+            })
+            .then((jsonResponse) => {
+                console.log(jsonResponse);
+            })
+    },
+
+
+    getArchive: function (boardID){
+        fetch(`/archive-card?board_id=${boardID.slice(8)}`)
+            .then((serverResponse)=>{
+                return serverResponse.json();
+            })
+            .then((jsonResponse) => {
+                console.log(jsonResponse);
+                let table_body=document.getElementById("tbod2")
+                table_body.innerHTML=""
+                for (let i=0; i<jsonResponse.length;i++){
+                    let row=table_body.insertRow()
+                    let id=row.insertCell(0)
+                    let title=row.insertCell(1)
+                    let board=row.insertCell(2)
+                    let status_id=row.insertCell(3)
+                    let priority=row.insertCell(4)
+                    let come_back_button_td=row.insertCell(5)
+                    id.innerHTML=jsonResponse[i]['id']
+                    title.innerHTML=jsonResponse[i]['title']
+                    board.innerHTML=jsonResponse[i]['board_id']
+                    status_id.innerHTML=jsonResponse[i]['status_id']
+                    priority.innerHTML=jsonResponse[i]['order_priority']
+                    let come_back_button=document.createElement("button")
+                    come_back_button.setAttribute("id",`come_back-${jsonResponse[i]['id']}`)
+                    come_back_button.textContent="Come back!"
+                    come_back_button_td.appendChild(come_back_button)
+                    come_back_button.addEventListener("click", function (event) {
+                        come_back_button.parentNode.parentNode.remove()
+                        dom.sendArchiveCardId(jsonResponse[i]['id'])
+
+                    })
+                }
+            })
+    },
+
+    sendArchiveCardId: function(id){
+        let data={"id":id.slice(10)
+
+        }
+        let settings={
+            'method': 'POST',
+                'headers': {
+                'Content-Type' : 'application/json',
+                'Accept' : 'application/json'
+            },
+            body: JSON.stringify(data),
+
+        }
+        fetch('/retrive-card',settings)
+            .then((serverResponse)=>{
+                return serverResponse.json();
+            })
+            .then((jsonResponse)=>{
                 console.log(jsonResponse);
             })
     },
