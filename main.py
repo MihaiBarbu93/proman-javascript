@@ -19,12 +19,14 @@ def index():
     """
     return render_template('index.html',usr_exist="no")
 
+
 @app.route('/update-board', methods=["POST"])
 def update_board():
     request_content = request.json
     data = {'id': request_content['id'], 'title': request_content['title']}
     data_handler.update_board(data)
     return jsonify({'success': True})
+
 
 @app.route('/remove-card', methods=["POST"])
 def remove_card():
@@ -33,13 +35,21 @@ def remove_card():
     data_handler.delete_card(data['id'])
     return jsonify({'success': True})
 
+
+@app.route('/delete-board', methods=["POST"])
+def remove_board():
+    request_content = request.json
+    board_id = int(request_content['id'])
+    data_handler.delete_board(board_id)
+    return jsonify({'success': True})
+
+
 @app.route('/update-card', methods=["POST"])
 def update_card():
     request_content = request.json
     data = {'id': request_content['id'][-1], 'title': request_content['title']}
     data_handler.update_card(data)
     return jsonify({'success': True})
-
 
 
 @app.route("/get-boards")
@@ -51,7 +61,6 @@ def get_boards():
     user_id = None
     if 'username' in session:
         user_id = data_handler.get_user_id(session['username'])
-        print(data_handler.get_boards(user_id['id']))
         return data_handler.get_boards(user_id['id'])
     return data_handler.get_boards(user_id)
 
@@ -108,7 +117,6 @@ def add_card():
 def get_all_statuses():
     all_statuses = persistence.get_statuses()
     all_statuses_json = json.dumps(all_statuses)
-    print(all_statuses_json)
     return all_statuses_json
 
 @app.route("/register", methods=['POST'])

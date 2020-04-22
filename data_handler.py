@@ -1,4 +1,4 @@
-import persistence,connection,bcrypt
+import persistence, connection, bcrypt
 
 
 def get_card_status(status_id):
@@ -43,12 +43,21 @@ def _insert_private_board(cursor, title, user_id):
                     ''')
 
 
-
 @connection.connection_handler
 def update_board(cursor, data):
     cursor.execute(f"""
         UPDATE boards SET title = '{data["title"]}' WHERE id = {data["id"]};
     """)
+
+
+@connection.connection_handler
+def delete_board(cursor, board_id):
+    cursor.execute(f"""
+        DELETE FROM cards WHERE cards.board_id={board_id}""")
+    cursor.execute(f"""
+        DELETE FROM boards WHERE boards.id={board_id}
+    """)
+
 
 @connection.connection_handler
 def delete_card(cursor, id):
@@ -56,11 +65,13 @@ def delete_card(cursor, id):
                     DELETE FROM cards WHERE id={id};
                     """)
 
+
 @connection.connection_handler
 def update_card(cursor, data):
     cursor.execute(f"""
         UPDATE cards SET title = '{data["title"]}' WHERE id = {data["id"]};
     """)
+
 
 @connection.connection_handler
 def _insert_column(cursor, title, board_id):
@@ -73,7 +84,6 @@ def _insert_column(cursor, title, board_id):
 def _insert_card(cursor, card_title, card_status, card_priority, board_id):
     query = f""" INSERT INTO cards VALUES (DEFAULT, {int(board_id)}, '{card_title}', {int(card_status)}, {int(card_priority)}); """
     cursor.execute(query)
-
 
 
 @connection.connection_handler
@@ -93,6 +103,7 @@ def check_credentials(cursor, user):
     result = cursor.fetchone()
     return result
 
+
 def hash_password(plain_text_password):
     hashed_bytes = bcrypt.hashpw(plain_text_password.encode('utf-8'), bcrypt.gensalt())
     return hashed_bytes.decode('utf-8')
@@ -102,12 +113,14 @@ def verify_password(plain_text_password, hashed_password):
     hashed_bytes_password = hashed_password.encode('utf-8')
     return bcrypt.checkpw(plain_text_password.encode('utf-8'), hashed_bytes_password)
 
+
 def check_user_existence(reg_user):
     for users in persistence._read_table('users'):
         if reg_user == users['username']:
             return True
         else:
             return False
+
 
 @connection.connection_handler
 def confirm_user(cursor, usrname):
@@ -120,6 +133,7 @@ def confirm_user(cursor, usrname):
         return True
     else:
         return False
+
 
 @connection.connection_handler
 def get_user_id(cursor,username):

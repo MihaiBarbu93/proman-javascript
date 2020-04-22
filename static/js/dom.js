@@ -22,12 +22,15 @@ export let dom = {
         for (let board of boards) {
             let boardLi =
               `
-                <section class="board" id="board` +board.id +`">
+                <section class="board" id="board` +
+              board.id +
+              `">
                     <div class="board-header">
                         <span class="board-title" id="board-title-` +
               board.id +
               `" contenteditable="true">${board.title}</span>
                         <button class="board-add" id="add-card-btn-${board.id}">Add Card</button>
+                        <button class="board-delete" id="delete-board-btn-${board.id}">Delete Board</button>
                         <button id="${board.id}" class="board-toggle btn btn-link" data-toggle="collapse" data-target="#collapse${board.id}" aria-expanded="false" aria-controls="collapseOne">
                         <i class="fas fa-chevron-down"></i></button>
                     </div>
@@ -39,6 +42,8 @@ export let dom = {
             `;
 
             boardsContainer.innerHTML += boardLi
+
+            
             
         }
 
@@ -54,6 +59,18 @@ export let dom = {
         for (let btn of addCardButtons){
             btn.addEventListener('click', function(){
                 dom.addCard(btn);
+            })
+        }
+
+        //  assign to a variable the HTML collection with all the board-delete buttons
+        let deleteBoardButtons = document.getElementsByClassName('board-delete');
+
+        for (let button of deleteBoardButtons) {
+            button.addEventListener('click', function () {
+                // get the id of the board to be deleted from the associated board-delete btn ID
+                let boardToDeleteId = button.id.replace('delete-board-btn-', '')
+                dom.removeBoard(boardToDeleteId);
+                this.parentNode.remove();
             })
         }
     },
@@ -225,6 +242,33 @@ export let dom = {
             .then((jsonResponse) => {
                 console.log(jsonResponse);
             })
+    },
+
+    removeBoard: function (boardToDeleteId) {
+
+        // add into the data dict the id of the board to be deleted
+
+        let data = {
+            'id': boardToDeleteId,
+        };
+
+        let settings = {
+        "method": "POST",
+        "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        },
+        body: JSON.stringify(data),
+        };
+
+        fetch("/delete-board", settings)
+        .then((serverResponse) => {
+            return serverResponse.json();
+        })
+        .then((jsonResponse) => {
+            console.log(jsonResponse);
+        });
+
     },
 
     showCards: function (cards, boardColumn) {
