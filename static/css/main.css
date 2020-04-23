@@ -58,9 +58,10 @@
     cursor: pointer;
 }
 
-.board-add:hover {
+.board-add:hover, .card-add:hover {
     cursor: pointer;
 }
+
 
 .board-delete {
     background-color: tomato;

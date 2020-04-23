@@ -29,11 +29,11 @@ export let dom = {
                         <span class="board-title" id="board-title-` +
               board.id +
               `" contenteditable="true">${board.title}</span>
-                        <button class="board-add" id="add-card-btn-${board.id}">Add Card</button>
+                        <button class="card-add" id="add-card-btn-${board.id}">Add Card</button>
                         <button class="board-delete" id="delete-board-btn-${board.id}">Delete Board</button>
                         <button class="archive" id="archive-${board.id}">Archive</button>
                         <button id="${board.id}" class="board-toggle btn btn-link" data-toggle="collapse" data-target="#collapse${board.id}" aria-expanded="false" aria-controls="collapseOne">
-                        <i class="fas fa-chevron-down"></i></button>
+                        Collapse</button>
                     </div>
                     <div id="collapse${board.id}" class="collapse">
                         <div class="board-columns"></div>
@@ -52,7 +52,7 @@ export let dom = {
             btn.addEventListener("click",function (event) {
                 dom.getArchive(this.id)
                 let arc_modal=document.getElementById("archive_modal")
-                arc_modal.style.display="block"
+                arc_modal.style.display = "block"
             })
         }
 
@@ -64,7 +64,7 @@ export let dom = {
             })
         }
 
-        const addCardButtons = document.getElementsByClassName('board-add');
+        const addCardButtons = document.getElementsByClassName('card-add');
         for (let btn of addCardButtons){
             btn.addEventListener('click', function(){
                 dom.addCard(btn);
@@ -89,18 +89,22 @@ export let dom = {
         let expand_buttons = document.getElementsByClassName("board-toggle")
         
         for (let expand_button of expand_buttons) {
-            expand_button.addEventListener('click', function (e) {
+            expand_button.addEventListener('click', async function (e) {
 
-                if(e.target.className == 'fas fa-chevron-down'){
-                    var boardId = parseInt(e.target.parentNode.id);
-                    var section = document.getElementById(`board${boardId}`)
-                    var boardColumn = section.children[1].children[0]
-                }else{
-                    var boardId = parseInt(e.target.id);
+                console.log(e.target)
+
+                if (e.target.className == "board-toggle btn btn-link") {
+                  console.log("class name egal cu");
+                  var boardId = parseInt(e.target.id);
+                  var section = document.getElementById(`board${boardId}`);
+                  var boardColumn = section.children[1].children[0];
+                  console.log('boooord', boardColumn)
+                } else {
+                  var boardId = parseInt(e.target.id);
                 }
 
                 let allStatuses = []
-                fetch('/get-statuses')
+               await fetch('/get-statuses')
                     .then((response) => response.json())
                     .then(responseJson => {
 
@@ -125,7 +129,7 @@ export let dom = {
                                 <div class="board-column-content" data-column-container="`+(responseJson.findIndex(p => p.title == allStatuses[i]) + 1) +`" id="${allStatuses[i]}"></div>
                                 </div>`;responseJson[i]['id']
 
-                                    boardColumn.innerHTML += boardColumnContent;
+                                boardColumn.innerHTML += boardColumnContent;
                                     
                                 }
                                 let addColumnButton = `<button id="board_col_id_`+board.id+`" class="column-add" data-board-id="`+board.id+`">Add Column</button>`;
@@ -286,13 +290,15 @@ export let dom = {
 
 
                     })
-                    let modal = document.getElementById("archive_modal");
-                    let close_archive_btn = document.getElementById('close_archive_modal')
-                    close_archive_btn.addEventListener("click", function (event) {
-                        modal.classList.remove('show');
-                    });
                 }
             })
+            let modal = document.getElementById("archive_modal");
+            let close_archive_btn = document.getElementById('close_archive_modal')
+            console.log('afara', close_archive_btn)
+            close_archive_btn.addEventListener("click", function (event) {
+                console.log(close_archive_btn)
+                modal.style.display = 'none';
+            });
     },
 
     sendArchiveCardId: function(id){
@@ -391,18 +397,18 @@ export let dom = {
     },
 
     addCard: function(btnPressed){
-        const boardId = btnPressed.id.replace('add-card-btn-', '')
-        const hiddenInput = document.getElementById('card-boardId')
+        let boardId = parseInt(btnPressed.id.replace('add-card-btn-', ''))
+        let hiddenInput = document.getElementById('card-boardId')
         hiddenInput.value = boardId
         let modal = document.getElementById('addCardModal');
         
         modal.style.display = 'block';
-        let closeBtn = document.getElementById('close_column_modal');
+        let closeBtn = document.getElementById('close_card_modal');
         closeBtn.addEventListener('click', function(){
             modal.style.display = 'none';
         })
 
-        const submitBtn = document.getElementById('submit_card');
+        let submitBtn = document.getElementById('submit_card');
         submitBtn.addEventListener('click', function(){
             modal.style.display = 'none';
             dom.loadCards(boardId)

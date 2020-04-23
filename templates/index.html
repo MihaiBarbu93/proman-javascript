@@ -128,28 +128,29 @@
           </div>
         </div>
 
+<!-- Add card modal-->
         <div class="modal" id="addCardModal" role="dialog">
           <div class="modal-dialog">
 
             <!-- Modal content-->
             <div class="modal-content">
               <div class="modal-header">
-                <button id="close_column_modal" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button id="close_card_modal" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
               </div>
               <div class="modal-body">
                   <form method="POST" id="cardModalForm" action="/add-card">
                       <input type="hidden" name="boardId" id="card-boardId">
                       <label for="titleColField">Title:</label><br>
                       <input id="titleColField" type="text" placeholder="Title..." name="card_title">
-                      <select name="card_status">
-                        <option selected disabled>--Status--</option>
+                      <select name="card_status" required>
+                        <option selected disabled value=''>--Status--</option>
                         <option value="1">New</option>
                         <option value="2">In Progress</option>
                         <option value="3">Testing</option>
                         <option value="4">Done</option>
                       </select>
-                      <select name="card_priority">
-                        <option selected disabled>--Priority--</option>
+                      <select name="card_priority" required>
+                        <option selected disabled value=''>--Priority--</option>
                         <option value="0">0</option>
                         <option value="1">1</option>
                       </select>
@@ -226,7 +227,7 @@
   </div>
 </div>
     <!--ARCHIVE MODAL-->
-    <div class="modal fade show modal-archive" style="display: none;padding: 50px" id="archive_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    <div class="modal fade show modal-archive" style="padding: 50px" id="archive_modal" role="dialog" aria-labelledby="myModalLabel"
   aria-hidden="true">
   <div class="modal-dialog " role="document">
     <div class="modal-content"style="width: auto";>
