@@ -30,7 +30,7 @@ def open_database():
         # connection_string = get_connection_string()
         # connection = psycopg2.connect(connection_string)
         urllib.parse.uses_netloc.append('postgres')
-        url = urllib.parse.urlparse(os.environ.get('DATABASE_URL'))
+        URL = urllib.parse.urlparse(os.environ.get('DATABASE_URL'))
         connection = psycopg2.connect(
             database=URL.path[1:],
             user=URL.username,
