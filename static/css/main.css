@@ -58,13 +58,18 @@
     cursor: pointer;
 }
 
-.board-add:hover, .card-add:hover {
+.board-add:hover, .card-add:hover, .archive {
     cursor: pointer;
 }
 
-
 .board-delete {
-    background-color: tomato;
+    color: tomato;
+    font-size: 1.4em;
+    height: 50px;
+}
+
+button.board-delete {
+    background: #ddd url(http://cdn.backgroundhost.com/backgrounds/subtlepatterns/diagonal-noise.png);
 }
 
 .board-delete:hover {
@@ -74,3 +79,19 @@
 .card:hover {
     cursor: grab;
 }
+
+
+.delete-container {
+    vertical-align: middle;
+    align-items: center;
+    line-height: 100px;
+}
+
+.delete-container  {
+    padding-left: 0 !important;
+}
+
+.row-board {
+    padding-right: 0 !important;
+}
+

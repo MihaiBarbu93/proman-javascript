@@ -22,6 +22,8 @@ export let dom = {
         for (let board of boards) {
             let boardLi =
               `
+                <div class="row">
+                <div class="col-11 row-board">
                 <section class="board" id="board` +
               board.id +
               `">
@@ -30,7 +32,6 @@ export let dom = {
               board.id +
               `" contenteditable="true">${board.title}</span>
                         <button class="card-add" id="add-card-btn-${board.id}">Add Card</button>
-                        <button class="board-delete" id="delete-board-btn-${board.id}">Delete Board</button>
                         <button class="archive" id="archive-${board.id}">Archive</button>
                         <button id="${board.id}" class="board-toggle btn btn-link" data-toggle="collapse" data-target="#collapse${board.id}" aria-expanded="false" aria-controls="collapseOne">
                         Collapse</button>
@@ -39,6 +40,12 @@ export let dom = {
                         <div class="board-columns"></div>
                     </div>
                 </section>
+                </div>
+                <div class="col-1 delete-container">
+                <button class="board-delete" id="delete-board-btn-${board.id}"><i class="fas fa-trash-alt"></i></button>
+                </div>
+                </div>
+
                 
             `;
 
