@@ -19,12 +19,47 @@ def index():
     """
     return render_template('index.html',usr_exist="no")
 
+
 @app.route('/update-board', methods=["POST"])
 def update_board():
     request_content = request.json
-    data = {'id': request_content['id'][-1], 'title': request_content['title']}
+    data = {'id': request_content['id'], 'title': request_content['title']}
     data_handler.update_board(data)
     return jsonify({'success': True})
+
+@app.route('/remove-card', methods=["POST"])
+def remove_card():
+    request_content = request.json
+    data = {'id': request_content['id']}
+    data_handler.archive_card(data['id'])
+    data_handler.delete_card(data['id'])
+    return jsonify({'success': True})
+
+
+@app.route('/delete-board', methods=["POST"])
+def remove_board():
+    request_content = request.json
+    board_id = int(request_content['id'])
+    data_handler.delete_board(board_id)
+    return jsonify({'success': True})
+
+
+@app.route('/archive-card',methods=["GET"])
+def archive_card():
+    board_id = request.args.get("board_id")
+    return jsonify(data_handler.get_archived_cards(board_id))
+
+
+@app.route('/retrive-card',methods=["POST"])
+def retrive_card():
+    card_id=request.get_json()
+    print(card_id)
+    data_handler.revived_card(card_id['id'])
+    data_handler.remove_from_archive(card_id['id'])
+    return jsonify({'success': True})
+
+
+
 
 @app.route('/update-card', methods=["POST"])
 def update_card():
@@ -34,14 +69,18 @@ def update_card():
     return jsonify({'success': True})
 
 
-
 @app.route("/get-boards")
 @json_response
 def get_boards():
     """
     All the boards
     """
-    return data_handler.get_boards()
+    user_id = None
+    if 'username' in session:
+        user_id = data_handler.get_user_id(session['username'])
+
+        return data_handler.get_boards(user_id['id'])
+    return data_handler.get_boards(user_id)
 
 
 @app.route("/get-cards/<int:board_id>")
@@ -60,6 +99,17 @@ def add_board():
         title=request.form['board_title']
         data_handler._insert_board(title)
         return redirect(url_for('index'))
+
+
+
+@app.route('/add-private-board', methods=['GET','POST'])
+def add_private_board():
+    if request.method == 'POST':
+        title = request.form['private_board_title']
+        user_id = data_handler.get_user_id(session['username'])
+        data_handler._insert_private_board(title, user_id['id'])
+        return redirect(url_for('index'))
+
 
 @app.route('/add-column', methods=['GET', 'POST'])
 def add_column():

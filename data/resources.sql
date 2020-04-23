@@ -2,11 +2,22 @@ DROP TABLE cards;
 DROP TABLE statuses;
 DROP TABLE boards;
 DROP TABLE users;
+DROP TABLE archive;
+
+CREATE TABLE archive
+(
+    id             serial NOT NULL,
+    board_id       integer,
+    title          varchar(20),
+    status_id      integer,
+    order_priority integer
+);
 
 
 CREATE TABLE boards(
         id serial not null ,
         title varchar(20) NOT NULL UNIQUE,
+        user_id integer,
         PRIMARY KEY (id)
 );
 
