@@ -86,7 +86,7 @@ export let dom = {
                 // get the id of the board to be deleted from the associated board-delete btn ID
                 let boardToDeleteId = button.id.replace('delete-board-btn-', '')
                 dom.removeBoard(boardToDeleteId);
-                this.parentNode.remove();
+                this.parentNode.parentNode.remove();
             })
         }
     },

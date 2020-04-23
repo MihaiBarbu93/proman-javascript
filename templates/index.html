@@ -57,10 +57,12 @@
 </header>
         <h1>ProMan</h1>
 
-        <div class="new-board-button-container"><button id="new_board_btn" data-toogle="modal" data-target="#myModal">New Board</button></div>
-        {% if 'username' in session %}
-             <div class="new-board-button-container"><button id="new_private_board_btn" data-toogle="modal" data-target="#PrivateModal">New Private Board</button></div>
-        {% endif %}
+        <div class="board-buttons-container">
+          <div class="new-board-button-container"><button id="new_board_btn" data-toogle="modal" data-target="#myModal">New Board</button></div>
+          {% if 'username' in session %}
+              <div class="new-board-button-container"><button id="new_private_board_btn" data-toogle="modal" data-target="#PrivateModal">New Private Board</button></div>
+          {% endif %}
+        </div>
         <div class="board-container">
 
 
