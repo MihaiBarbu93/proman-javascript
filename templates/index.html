@@ -6,6 +6,7 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>ProMan</title>
 
+        <link rel="manifest" href="/static/manifest.json">
 
         <link rel="shortcut icon" href="{{ url_for('static', filename='favicon/favicon.ico') }}">
         <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon/favicon-32x32.png') }}">
@@ -252,5 +253,13 @@
       </div>
         </div>
     </div>
+
+    <script>
+      if (!navigator.serviceWorker.controller) {
+          navigator.serviceWorker.register("/sw.js").then(function(reg) {
+              console.log("Service worker has been registered for scope: " + reg.scope);
+          });
+      }
+     </script>
     </body>
 </html>

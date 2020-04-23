@@ -1,0 +1,11 @@
+{
+  "name": "Proman Project Manager",
+  "short_name": "Proman",
+  "theme_color": "#e1e7ec",
+  "background_color": "#e7dcb0",
+  "display": "standalone",
+  "Scope": "/",
+  "start_url": "https://proman-codecool-team-project.herokuapp.com/",
+  "icons": null,
+  "splash_pages": null
+}
