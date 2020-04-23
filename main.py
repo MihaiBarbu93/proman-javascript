@@ -78,6 +78,7 @@ def get_boards():
     user_id = None
     if 'username' in session:
         user_id = data_handler.get_user_id(session['username'])
+        
 
         return data_handler.get_boards(user_id['id'])
     return data_handler.get_boards(user_id)

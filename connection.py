@@ -1,6 +1,7 @@
 import os
 import psycopg2
 import psycopg2.extras
+import urllib
 
 
 def get_connection_string():
@@ -26,8 +27,17 @@ def get_connection_string():
 
 def open_database():
     try:
-        connection_string = get_connection_string()
-        connection = psycopg2.connect(connection_string)
+        # connection_string = get_connection_string()
+        # connection = psycopg2.connect(connection_string)
+        urllib.parse.uses_netloc.append('postgres')
+        url = urllib.parse.urlparse(os.environ.get('DATABASE_URL'))
+        connection = psycopg2.connect(
+            database=URL.path[1:],
+            user=URL.username,
+            password=URL.password,
+            host=URL.hostname,
+            port=URL.port
+        )
         connection.autocommit = True
     except psycopg2.DatabaseError as exception:
         print('Database connection problem')

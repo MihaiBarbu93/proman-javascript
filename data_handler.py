@@ -66,11 +66,11 @@ def delete_card(cursor, id):
                     """)
 
 
-@connection.connection_handler
-def delete_card(cursor, id):
-    cursor.execute(f"""
-                    DELETE FROM cards WHERE id={id};
-                    """)
+# @connection.connection_handler
+# def delete_card(cursor, id):
+#     cursor.execute(f"""
+#                     DELETE FROM cards WHERE id={id};
+#                     """)
 
 @connection.connection_handler
 def update_card(cursor, data):
@@ -177,6 +177,7 @@ def confirm_user(cursor, usrname):
 
 @connection.connection_handler
 def get_user_id(cursor,username):
+    print(username)
     cursor.execute(f"""
                     SELECT id FROM users
                     WHERE username='{username}'
@@ -185,14 +186,14 @@ def get_user_id(cursor,username):
     return result
 
 
-@connection.connection_handler
-def get_user_id(cursor,username):
-    cursor.execute(f"""
-                    SELECT id FROM users
-                    WHERE username='{username}'
-                    """)
-    result = cursor.fetchone()
-    return result
+# @connection.connection_handler
+# def get_user_id(cursor,username):
+#     cursor.execute(f"""
+#                     SELECT id FROM users
+#                     WHERE username='{username}'
+#                     """)
+#     result = cursor.fetchone()
+#     return result
 
 
 @connection.connection_handler
